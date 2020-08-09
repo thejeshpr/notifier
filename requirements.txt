@@ -13,17 +13,12 @@ fastapi==0.60.1
 gunicorn==20.0.4
 h11==0.9.0
 idna==2.10
-ipykernel @ file:///C:/ci/ipykernel_1596208728219/work/dist/ipykernel-5.3.4-py3-none-any.whl
-ipython @ file:///C:/ci/ipython_1593433781269/work
 ipython-genutils==0.2.0
-jedi @ file:///C:/ci/jedi_1596472767194/work
 jsonbox==1.2.1
-jupyter-client @ file:///tmp/build/80754af9/jupyter_client_1594826976318/work
 jupyter-core==4.6.3
 knotify==0.0.2
 multidict==4.7.6
 parso==0.7.0
-pickleshare @ file:///C:/ci/pickleshare_1594374056827/work
 prompt-toolkit==3.0.5
 pydantic==1.6.1
 Pygments==2.6.1
@@ -39,7 +34,6 @@ traitlets==4.3.3
 typing-extensions==3.7.4.2
 urllib3==1.25.10
 uvicorn==0.11.8
-wcwidth @ file:///tmp/build/80754af9/wcwidth_1593447189090/work
 websockets==8.1
 wincertstore==0.2
 yarl==1.5.1
