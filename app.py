@@ -17,13 +17,19 @@ REDOC_END_POINT = os.environ.get("REDOC_END_POINT")
 app = FastAPI(docs_url=SAWWGER_END_POINT, redoc_url=REDOC_END_POINT)
 
 @app.get("/")
-async def read_root(background_tasks: BackgroundTasks):        
+def read_root(background_tasks: BackgroundTasks):        
     background_tasks.add_task(Buildofy.sync, os.environ.get("B_BOX_ID"))    
-    return res("sync job initiated")    
+    return res("Welcome")
+
+
+@app.get("/sync-b")
+async def sync_b(background_tasks: BackgroundTasks):        
+    background_tasks.add_task(Buildofy.sync, os.environ.get("B_BOX_ID"))    
+    return res("sync job initiated")
     
 
 @app.get("/sleep/{seconds}")
-async def read_root(seconds: int, background_tasks: BackgroundTasks):    
+async def sleep(seconds: int, background_tasks: BackgroundTasks):    
     background_tasks.add_task(sleep, seconds)    
     return res(f"sleeping for {seconds} seconds")
 
@@ -34,7 +40,7 @@ def sleep(seconds):
 
 
 @app.get("/ping")
-def read_item():
+def ping():
     return res("pong")
 
 
