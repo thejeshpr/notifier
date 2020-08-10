@@ -82,24 +82,28 @@ class Buildofy(object):
 
             if posts:
                 jbox_res = Buildofy.__get_posts_frm_jsnbx(box_id)
+                
                 if jbox_res:
                     new_posts = Buildofy.__compare_posts(jbox_res, posts)
+
                     if new_posts:
+
                         updated_posts = jbox_res.get("ids") + new_posts                        
-                        Buildofy.__push_to_jbox(updated_posts, jbox_res.get('_id'))
+
+                        Buildofy.__push_to_jbox(updated_posts, box_id, jbox_res.get('_id'))
                         pusher.push(
                             title=f"Buildofy Status",
                             message=f"{len(new_posts)} post(s) found: {','.join(new_posts)}",
                             notification_type=NOTIFICATION_TYPE
                         )
-                        # print("Push done")
+
                     else:
                         pusher.push(
                             title=f"Buildofy Status",
                             message=f"No new posts found",
                             notification_type=NOTIFICATION_TYPE
                         )
-                        # print("Push done")
+
                 else:
                     Buildofy.__push_to_jbox(posts)    
             else:
