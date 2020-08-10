@@ -4,12 +4,17 @@ from typing import Optional
 
 from fastapi import BackgroundTasks, FastAPI
 
-from custom_lib import buildofy, response_handler
+from custom_lib import buildofy, response_handler, random_quote
 
 app = FastAPI()
 res = response_handler.Response
 Buildofy = buildofy.Buildofy
+RandomQuote = random_quote.RandomQuote
 
+SAWWGER_END_POINT = os.environ.get("SAWWGER_END_POINT")
+REDOC_END_POINT = os.environ.get("REDOC_END_POINT")
+
+app = FastAPI(docs_url=SAWWGER_END_POINT, redoc_url=REDOC_END_POINT)
 
 @app.get("/")
 async def read_root(background_tasks: BackgroundTasks):        
@@ -36,4 +41,10 @@ def read_item():
 @app.get("/link/{post_id}")
 def get_link(post_id: int):    
     return res(Buildofy.get_download_link(post_id))
-        
+
+
+@app.get("/random-quote")
+async def random_quote(background_tasks: BackgroundTasks):
+    rquote = RandomQuote()
+    background_tasks.add_task(rquote.get_quote)
+    return res(f"random quote dispatched")
