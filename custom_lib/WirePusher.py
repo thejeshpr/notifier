@@ -69,7 +69,7 @@ class WirePusher(object):
         }
         try:
             req = requests.get(self.__url, params=params)
-            print(req.text)
+            # print(req.text)
         except Exception as e:
             print(e)
 

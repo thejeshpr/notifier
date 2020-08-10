@@ -85,8 +85,7 @@ class Buildofy(object):
                 if jbox_res:
                     new_posts = Buildofy.__compare_posts(jbox_res, posts)
                     if new_posts:
-                        updated_posts = jbox_res.get("ids") + new_posts
-                        print(jbox_res.get('_id'))
+                        updated_posts = jbox_res.get("ids") + new_posts                        
                         Buildofy.__push_to_jbox(updated_posts, jbox_res.get('_id'))
                         pusher.push(
                             title=f"Buildofy Status",
