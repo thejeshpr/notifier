@@ -8,7 +8,9 @@ from custom_lib import (
     Bfy,
     Response,
     RandomQuote,
-    Covid19)
+    Covid19,
+    Unsplash
+    )
 
 app = FastAPI()
 res = Response
@@ -51,6 +53,12 @@ async def random_quote(background_tasks: BackgroundTasks):
     rquote = RandomQuote()
     background_tasks.add_task(rquote.get_quote)
     return res(f"random quote dispatched")
+
+@app.get("/random-image")
+async def random_image(background_tasks: BackgroundTasks):
+    rimg = Unsplash()
+    background_tasks.add_task(rimg.send_random_image)
+    return res(f"random image dispatched")
 
 
 @app.get("/covid-19")

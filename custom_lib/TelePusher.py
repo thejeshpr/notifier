@@ -14,7 +14,7 @@ class TelePusher():
         payload['chat_id'] = f"@{self.__chat_id}"
         payload['parse_mode'] = 'markdown'                
         
-        requests.get(url, params=payload).json()
+        return requests.get(url, params=payload).json()
         
     def send_message(self, text: str):
         payload = {            
@@ -30,7 +30,7 @@ class TelePusher():
         if caption:
             payload['caption'] = caption
 
-        self.__dispatch(payload, "sendPhoto")
+        return self.__dispatch(payload, "sendPhoto")
 
     def send_document(self, doc_url, caption=None):
         payload = {            
@@ -40,4 +40,4 @@ class TelePusher():
         if caption:
             payload['caption'] = caption
 
-        self.__dispatch(payload, "sendDocument")
+        return self.__dispatch(payload, "sendDocument")
