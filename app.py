@@ -4,12 +4,14 @@ from typing import Optional
 
 from fastapi import BackgroundTasks, FastAPI
 
-from custom_lib import buildofy, response_handler, random_quote
+from custom_lib import (
+    Bfy,
+    Response,
+    RandomQuote,
+    Covid19)
 
 app = FastAPI()
-res = response_handler.Response
-Buildofy = buildofy.Buildofy
-RandomQuote = random_quote.RandomQuote
+res = Response
 
 SAWWGER_END_POINT = os.environ.get("SAWWGER_END_POINT")
 REDOC_END_POINT = os.environ.get("REDOC_END_POINT")
@@ -17,14 +19,19 @@ REDOC_END_POINT = os.environ.get("REDOC_END_POINT")
 app = FastAPI(docs_url=SAWWGER_END_POINT, redoc_url=REDOC_END_POINT)
 
 @app.get("/")
-def read_root(background_tasks: BackgroundTasks):        
-    background_tasks.add_task(Buildofy.sync, os.environ.get("B_BOX_ID"))    
+def read_root():    
     return res("Welcome")
 
 
+@app.get("/ping")
+def ping():
+    return res("pong")
+
+
 @app.get("/sync-b")
-async def sync_b(background_tasks: BackgroundTasks):        
-    background_tasks.add_task(Buildofy.sync, os.environ.get("B_BOX_ID"))    
+async def sync_b(background_tasks: BackgroundTasks):
+    bfy = Bfy()
+    background_tasks.add_task(bfy.sync)
     return res("sync job initiated")
     
 
@@ -39,18 +46,15 @@ def sleep(seconds):
     print(f"{seconds} done")
 
 
-@app.get("/ping")
-def ping():
-    return res("pong")
-
-
-@app.get("/link/{post_id}")
-def get_link(post_id: int):    
-    return res(Buildofy.get_download_link(post_id))
-
-
 @app.get("/random-quote")
 async def random_quote(background_tasks: BackgroundTasks):
     rquote = RandomQuote()
     background_tasks.add_task(rquote.get_quote)
     return res(f"random quote dispatched")
+
+
+@app.get("/covid-19")
+async def covid_19(background_tasks: BackgroundTasks):
+    c19 = Covid19()
+    background_tasks.add_task(c19.get_stats)
+    return res(f"information dispatched")
