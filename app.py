@@ -1,6 +1,7 @@
 import os
 import time
 from typing import Optional
+from uuid import uuid4
 
 from fastapi import BackgroundTasks, FastAPI
 
@@ -56,9 +57,10 @@ async def random_quote(background_tasks: BackgroundTasks):
 
 @app.get("/random-image")
 async def random_image(background_tasks: BackgroundTasks):
+    uid = str(uuid4())
     rimg = Unsplash()
-    background_tasks.add_task(rimg.send_random_image)
-    return res(f"random image dispatched")
+    background_tasks.add_task(rimg.send_random_image, uid)
+    return res(f"random image dispatched {uid}")
 
 
 @app.get("/covid-19")

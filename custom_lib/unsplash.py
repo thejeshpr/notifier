@@ -10,7 +10,7 @@ class Unsplash():
         self.__url = "https://api.unsplash.com/photos/"
         self.__access_token = os.environ.get("UNSPLASH_ACCESS_TOKEN")
     
-    def send_random_image(self):
+    def send_random_image(self, uid):
         url = self.__url + "random"
         pusher = TelePusher()
         try:
@@ -20,8 +20,12 @@ class Unsplash():
             res = requests.get(url, params=params).json()
             img = res.get('links').get('download')
             user = res.get('user').get('name')
+            caption = (
+                f'User: {user}\n'
+                f'dID: {uid}'
+            )
             pusher.send_photo(
-                img, caption=f'User: {user}'
+                img, caption=caption
                 )            
         except Exception as e:            
             tb = traceback.format_exc()
