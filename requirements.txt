@@ -1,4 +1,4 @@
-airtable-python-wrapper==0.13.0
+irtable-python-wrapper==0.13.0
 beautifulsoup4==4.9.1
 bs4==0.0.1
 certifi==2020.6.20
@@ -11,8 +11,9 @@ h11==0.9.0
 idna==2.10
 ipython-genutils==0.2.0
 jsonbox==1.2.1
-pydantic==1.6.1
+newsapi-python==0.2.6
 pycparser==2.20
+pydantic==1.6.1
 requests==2.24.0
 six==1.15.0
 soupsieve==2.0.1

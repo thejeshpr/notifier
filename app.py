@@ -7,9 +7,10 @@ from fastapi import BackgroundTasks, FastAPI
 
 from custom_lib import (
     Bfy,
-    Response,
-    RandomQuote,
     Covid19,
+    News,
+    RandomQuote,
+    Response,    
     Unsplash
     )
 
@@ -68,3 +69,18 @@ async def covid_19(background_tasks: BackgroundTasks):
     c19 = Covid19()
     background_tasks.add_task(c19.get_stats)
     return res(f"information dispatched")
+
+@app.get("/latest-news")
+async def latest_news(background_tasks: BackgroundTasks, c: Optional[str] = None):    
+    na = News()
+    if c:
+        background_tasks.add_task(na.send_latest_news, c)
+    else:
+        background_tasks.add_task(na.send_latest_news)
+    return res(f"information dispatched")
+
+@app.get("/news-clean-up")
+async def news_clean_up(background_tasks: BackgroundTasks):
+    na = News()
+    background_tasks.add_task(na.clean_up)
+    return res(f"task initiated")
