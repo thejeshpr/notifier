@@ -7,6 +7,7 @@ from fastapi import BackgroundTasks, FastAPI
 
 from custom_lib import (
     Bfy,
+    Course,
     Covid19,
     News,
     RandomQuote,
@@ -83,4 +84,11 @@ async def latest_news(background_tasks: BackgroundTasks, c: Optional[str] = None
 async def news_clean_up(background_tasks: BackgroundTasks):
     na = News()
     background_tasks.add_task(na.clean_up)
+    return res(f"task initiated")
+
+
+@app.get("/course/latest")
+async def course_latest(background_tasks: BackgroundTasks):
+    obj = Course()
+    background_tasks.add_task(obj.send_latest_courses)
     return res(f"task initiated")
