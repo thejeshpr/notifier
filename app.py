@@ -36,7 +36,7 @@ def ping():
 @app.get("/sync-b")
 async def sync_b(background_tasks: BackgroundTasks):
     bfy = Bfy()
-    background_tasks.add_task(bfy.sync)
+    background_tasks.add_task(bfy.send)
     return res("sync job initiated")
     
 

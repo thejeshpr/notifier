@@ -6,7 +6,6 @@ import traceback
 
 import requests
 from bs4 import BeautifulSoup
-from airtable import Airtable
 
 from .TelePusher import TelePusher
 
@@ -22,17 +21,13 @@ class Bfy(object):
         """
         Initiliaze
         """
-        self.box_id = os.environ.get("BOX_ID")
-        self.collection = "b-posts"
-        self.existing_posts_id = []
-        self.new_posts = []
-        self.new_posts_id = []
-        self.downloaded_posts = {}   
-        self.error = None
-        self.pusher = TelePusher()
-        self.airtable = Airtable('appLC2o0lmr4Pc6rU', 'posts')        
+        self.box_id = os.environ.get("BOX_ID")    
+        self.no_of_posts = int(os.environ.get("BFY_NO_OF_POSTS")) or 10        
+        self.downloaded_posts = []
+        channel = os.environ.get('BFY_TELEGRAM_CHANNEL')
+        self.pusher = TelePusher(chat_id=channel)
     
-    def __get_post_ids(self):
+    def __get_latest_posts(self):
         """
         get posts posts
         return: posts
@@ -41,38 +36,15 @@ class Bfy(object):
         if res.status_code == 200:
             soup        = BeautifulSoup(res.content, 'html.parser')
             all_cards   = soup.find('div', {'id':'project-grid'})
-            posts = all_cards.find_all('div', {'class':['card']})            
+            posts = all_cards.find_all('div', {'class':['card']})[:self.no_of_posts]
                         
             for post in posts:
-                pid = post.find('div', {'class':'simplefavorite-button has-count'}).get('data-postid').strip()                
-                self.downloaded_posts[pid] = {
+                pid = post.find('div', {'class':'simplefavorite-button has-count'}).get('data-postid').strip()
+                self.downloaded_posts.append({
                     "id": int(pid),
-                    "Name": post.find("h4", {"class":"card-title"}).text.strip(),                    
+                    "Name": post.find("h4", {"class":"card-title"}).text.strip(),
                     "URL": post.find('a').get('href')
-                }
-
-    def __get_all_existing_posts(self):
-        """
-        get data from jbox
-        return: posts
-        """
-        records = self.airtable.get_all(fields=['id'])
-        for record in records:
-            self.existing_posts_id.append(record['fields'].get('id'))
-        self.existing_posts_id.sort()        
-            
-    
-    def __compare_posts(self):
-        """
-        compare existing posts and new posts
-        return: new posts
-        """
-        # Get downloaded post ids and sort it
-        downloaded_posts_id = [int(x) for x in list(self.downloaded_posts.keys())]
-        downloaded_posts_id.sort()        
-
-        if not self.existing_posts_id == downloaded_posts_id:
-            self.new_posts = list(set(downloaded_posts_id) - set(self.existing_posts_id))
+                })  
 
     @staticmethod
     def get_download_link(pid):
@@ -85,32 +57,24 @@ class Bfy(object):
                f"File: {Bfy.get_download_link(post['id'])}\n")
 
     
-    def sync(self):
+    def send(self):
         """
-        Sync the posts
+        send latest posts
         """ 
         try:
-            self.__get_post_ids()
-            self.__get_all_existing_posts()            
-            self.__compare_posts()            
+            self.__get_latest_posts()
 
-            if self.new_posts:                
+            if self.downloaded_posts:
                 msg = []
-                msg.append(f"{len(self.new_posts)} post(s) found")
-                posts_to_push = []
+                msg.append(f"Latest bfy posts\n")
 
-                for post_id in self.new_posts:                    
-                    data = self.downloaded_posts[str(post_id)]
-                    posts_to_push.append(data)
-                    msg.append(self.__format_post(data))
-                
-                self.airtable.batch_insert(posts_to_push)
-                msg = "\n".join(msg)                
+                for post in self.downloaded_posts:
+                    msg.append(self.__format_post(post))
+                                
+                msg = "\n".join(msg)
             else:
-                msg = "No new posts found"                      
-            tb = ""
+                msg = "No new posts found"
             error = False
-
         except Exception as e:
             error = True
             tb = traceback.format_exc()
