@@ -32,6 +32,16 @@ class TelePusher():
 
         return self.__dispatch(payload, "sendPhoto")
 
+    def send_video(self, video_url: str, caption=None):
+        payload = {            
+            "video": video_url            
+        }
+
+        if caption:
+            payload['caption'] = caption
+
+        return self.__dispatch(payload, "sendVideo")
+
     def send_document(self, doc_url, caption=None):
         payload = {            
             "photo": doc_url

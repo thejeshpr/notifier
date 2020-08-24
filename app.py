@@ -4,18 +4,25 @@ from typing import Optional
 from uuid import uuid4
 
 from fastapi import BackgroundTasks, FastAPI
+# from fastapi.staticfiles import StaticFiles
 
 from custom_lib import (
     Bfy,
     Course,
     Covid19,
     News,
+    Ng,
+    NGGroup,
+    NGType,
     RandomQuote,
     Response,    
     Unsplash
     )
 
 app = FastAPI()
+
+# app.mount("/static", StaticFiles(directory="static"), name="static")
+
 res = Response
 
 SAWWGER_END_POINT = os.environ.get("SAWWGER_END_POINT")
@@ -91,4 +98,11 @@ async def news_clean_up(background_tasks: BackgroundTasks):
 async def course_latest(background_tasks: BackgroundTasks):
     obj = Course()
     background_tasks.add_task(obj.send_latest_courses)
+    return res(f"task initiated")
+
+
+@app.get("/ng/g/{grp}/t/{typ}")
+async def get_model(background_tasks: BackgroundTasks, grp: NGGroup, typ: NGType):
+    obj = Ng(grp, typ)
+    background_tasks.add_task(obj.send_latest_posts)
     return res(f"task initiated")
