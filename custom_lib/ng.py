@@ -5,14 +5,13 @@ import time
 import traceback
 from urllib.request import urlopen, Request
 
-# from urllib3 import request, urlopen
 
 from .air_post import AirPost
 from .TelePusher import TelePusher
 
 
-BASE_URL = os.environ.get("NG_BASE_URL", "https://9gag.com/v1/group-posts/group/{grp}/type/{typ}")
-
+BASE_URL = os.environ.get("NG_BASE_URL")
+TELEGRAM_CHANNEL = os.environ.get("NG_TELEGRAM_CHANNEL")
 
 class NgException(Exception):
     pass
@@ -47,7 +46,7 @@ class Ng(object):
         self.typ = typ
     
     def send_latest_posts(self):        
-        pusher = TelePusher()
+        pusher = TelePusher(chat_id=TELEGRAM_CHANNEL)
         try:
             url = BASE_URL.format(grp=self.grp, typ=self.typ)                        
             headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"}
