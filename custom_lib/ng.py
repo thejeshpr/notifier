@@ -3,8 +3,7 @@ import os
 from pprint import pprint
 import time
 import traceback
-from urllib.request import urlopen, Request
-
+from urllib.request import urlopen, Request, ProxyHandler, build_opener
 
 from .air_post import AirPost
 from .TelePusher import TelePusher
@@ -51,8 +50,22 @@ class Ng(object):
             url = BASE_URL.format(grp=self.grp, typ=self.typ)                        
             headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"}
             
-            req = Request(url=url, headers=headers) 
-            res = urlopen(req)            
+            proxies = {
+                # 'http': "http://45.174.77.241:999",
+                # 'https': "http://45.174.77.241:999"
+                'http': os.environ.get('NG_PROXY'),                
+                'https': os.environ.get('NG_PROXY')                
+                }
+            proxy_handler = ProxyHandler(proxies)
+            # req = Request(url=url, headers=headers) 
+
+            opener = build_opener(proxy_handler)
+            response = Request(url, headers=headers)
+            res = opener.open(response)
+            
+            # result = res.read()
+            # print(result)
+            
             
             if res.status in [200]:            
                 data = json.loads(res.read())
@@ -76,8 +89,8 @@ class Ng(object):
                         pusher.send_video(video_url=post["media_url"], caption=caption)
                     time.sleep(5)                                
             else:
-                raise NgException(f"Invalid status code: {res.status}")            
+                raise NgException(f"Invalid status code: {res.status}")
         except Exception as e:            
             msg = f"An error occured while retriving the posts: {e}\n{traceback.format_exc()}"
             print(msg)
-            pusher.send_message(text=msg)                    
+            pusher.send_message(text=msg)
