@@ -56,7 +56,7 @@ class Ng(object):
             
             if res.status in [200]:            
                 data = json.loads(res.read())
-
+                
                 posts = {}
                 
                 for post in data.get("data").get("posts"):                    
@@ -70,7 +70,7 @@ class Ng(object):
 
                 for post in inserted_posts:
                     caption = "Title: {title}\n\nURL: {url}".format(title=post["title"], url=post["url"])
-                    if post["type"] == "Photo":                        
+                    if post["type"] == "Photo":
                         pusher.send_photo(photo_url=post["media_url"], caption=caption)
                     elif post["type"] == "Animated":
                         pusher.send_video(video_url=post["media_url"], caption=caption)
@@ -79,4 +79,5 @@ class Ng(object):
                 raise NgException(f"Invalid status code: {res.status}")            
         except Exception as e:            
             msg = f"An error occured while retriving the posts: {e}\n{traceback.format_exc()}"
+            print(msg)
             pusher.send_message(text=msg)                    
