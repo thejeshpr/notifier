@@ -4,10 +4,11 @@ import json
 import time
 from pprint import pprint
 
-from air_post import AirPost
-from TelePusher import TelePusher
+from .air_post import AirPost
+from .TelePusher import TelePusher
 
 TELEGRAM_CHANNEL = os.environ.get("IG_TELEGRAM_CHANNEL")
+IG_POST_URL = os.environ.get("IG_POST_CODE")
 
 class Posts(object):
     def __init__(self, igid, username, node):
@@ -41,7 +42,7 @@ class Posts(object):
 
 
 class IG(object):
-    def __init__(self, un):
+    def __init__(self, un):        
         self.url = os.environ.get("IG_BASE_URL")
         self.un = un
         self.profile = self.get_profile()        
@@ -52,42 +53,33 @@ class IG(object):
 
     def send_latest_posts(self):
         pusher = TelePusher(chat_id=TELEGRAM_CHANNEL)
-        username = self.profile['graphql']['user']['username']
-        igid = self.profile['graphql']['user']['id']
-        edges = self.profile.get("graphql")\
-                            .get("user")\
-                            .get("edge_owner_to_timeline_media")\
-                            .get('edges')
+        try:            
+            username = self.profile['graphql']['user']['username']
+            igid = self.profile['graphql']['user']['id']
+            edges = self.profile.get("graphql")\
+                                .get("user")\
+                                .get("edge_owner_to_timeline_media")\
+                                .get('edges')
 
-        posts = {}
+            posts = {}
 
-        for edge in edges:
-            node = edge.get('node')
-            if node["__typename"] in ["GraphImage", "GraphVideo"]:
-                _id = node.get("id")
-                posts[_id] = Posts(igid, username, node).json()
+            for edge in edges:
+                node = edge.get('node')                
+                code = node.get("shortcode")
+                posts[code] = Posts(igid, username, node).json()            
 
-        # pprint(posts)
+            ap = AirPost("appgFYflbwfpBuhRp", "posts")
+            inserted_posts = ap.insert(posts, "code")
 
-        ap = AirPost("appgFYflbwfpBuhRp", "posts")
-        inserted_posts = ap.insert(posts, "igid")
+            if inserted_posts:
+                pusher.send_message(f"Sending {len(inserted_posts)} posts of {username}")
+                time.sleep(5)
 
-        if inserted_posts:
-            pusher.send_message(f"Sending {len(inserted_posts)} posts of {username}")
-            time.sleep(5)
-
-            for post in inserted_posts:
-                print(post["code"])
-                if post['is_video']:
-                    print(pusher.send_video(video_url=post["video_url"], caption=post["caption"]))
-                else:
-                    print(pusher.send_photo(photo_url=post["disp_url"], caption=post["caption"])            )
-                    
-                time.sleep(5)   
-        else:
-            pusher.send_message(f"no latest posts of found for user {username}")
-
-
-if __name__ =="__main__":
-    # i = IG("")
-    # i.send_latest_posts()
+                for post in inserted_posts:
+                    code = post["code"]                    
+                    pusher.send_message(text=IG_POST_URL.format(code=code))
+                    time.sleep(5)   
+            else:
+                pusher.send_message(f"no latest posts of found for user {username}")
+        except Exception as e:
+            pusher.send_message(f"An error occured while fetcing posts of user: {self.un}")

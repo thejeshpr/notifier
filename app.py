@@ -10,14 +10,14 @@ from custom_lib import (
     Bfy,
     Course,
     Covid19,
+    IG,
     News,
     Ng,
     NGGroup,
     NGType,
     RandomQuote,
     Response,    
-    Unsplash,
-    fun
+    Unsplash    
     )
 
 app = FastAPI()
@@ -110,7 +110,8 @@ async def get_model(background_tasks: BackgroundTasks, grp: NGGroup, typ: NGType
 
 
 
-@app.get("/test")
-def test():
-    
-    return fun()
+@app.get("/ig/{usr}")
+async def ig(background_tasks: BackgroundTasks, usr: str):
+    obj = IG(usr)
+    background_tasks.add_task(obj.send_latest_posts)
+    return res(f"task initiated")

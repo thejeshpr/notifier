@@ -20,8 +20,8 @@ class TelePusher():
         payload = {            
             "text": text
         }
-        self.__dispatch(payload, "sendMessage")
-
+        return self.__dispatch(payload, "sendMessage")
+        
     def send_photo(self, photo_url: str, caption=None):
         payload = {            
             "photo": photo_url            
