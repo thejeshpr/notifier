@@ -10,3 +10,5 @@ from .course import Course
 from .air_post import AirPost
 from .ng import Ng
 from .options import *
+
+from .ng_test import fun

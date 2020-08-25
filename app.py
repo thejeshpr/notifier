@@ -16,7 +16,8 @@ from custom_lib import (
     NGType,
     RandomQuote,
     Response,    
-    Unsplash
+    Unsplash,
+    fun
     )
 
 app = FastAPI()
@@ -106,3 +107,10 @@ async def get_model(background_tasks: BackgroundTasks, grp: NGGroup, typ: NGType
     obj = Ng(grp, typ)
     background_tasks.add_task(obj.send_latest_posts)
     return res(f"task initiated")
+
+
+
+@app.get("/test")
+def test():
+    
+    return fun()

@@ -50,9 +50,7 @@ class Ng(object):
             url = BASE_URL.format(grp=self.grp, typ=self.typ)                        
             headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"}
             
-            proxies = {
-                # 'http': "http://45.174.77.241:999",
-                # 'https': "http://45.174.77.241:999"
+            proxies = {                
                 'http': os.environ.get('NG_PROXY'),                
                 'https': os.environ.get('NG_PROXY')                
                 }
