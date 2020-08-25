@@ -19,7 +19,8 @@ from custom_lib import (
     Response,    
     Unsplash,
     Payload,
-    fire_get
+    fire_get,
+    Gh
     )
 
 app = FastAPI()
@@ -123,3 +124,10 @@ async def ig(background_tasks: BackgroundTasks, usr: str):
 @app.post("/fire/get")
 async def fire(payload: Payload):
     return fire_get(payload)
+
+
+
+@app.get("/gh/trending")
+async def gh_trending(background_tasks: BackgroundTasks):    
+    background_tasks.add_task(Gh.send_trending_repos)
+    return res(f"Information dispatched")

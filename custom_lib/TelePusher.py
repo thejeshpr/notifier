@@ -18,7 +18,8 @@ class TelePusher():
         
     def send_message(self, text: str):
         payload = {            
-            "text": text
+            "text": text,
+            "disable_web_page_preview": "True"
         }
         return self.__dispatch(payload, "sendMessage")
         
