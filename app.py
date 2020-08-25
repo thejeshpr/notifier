@@ -17,7 +17,9 @@ from custom_lib import (
     NGType,
     RandomQuote,
     Response,    
-    Unsplash    
+    Unsplash,
+    Payload,
+    fire_get
     )
 
 app = FastAPI()
@@ -116,3 +118,8 @@ async def ig(background_tasks: BackgroundTasks, usr: str):
     # print(usr)
     background_tasks.add_task(obj.send_latest_posts)
     return res(f"task initiated")
+
+
+@app.post("/fire/get")
+async def fire(payload: Payload):
+    return fire_get(payload)
