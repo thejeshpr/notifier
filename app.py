@@ -113,5 +113,6 @@ async def get_model(background_tasks: BackgroundTasks, grp: NGGroup, typ: NGType
 @app.get("/ig/{usr}")
 async def ig(background_tasks: BackgroundTasks, usr: str):
     obj = IG(usr)
+    # print(usr)
     background_tasks.add_task(obj.send_latest_posts)
     return res(f"task initiated")

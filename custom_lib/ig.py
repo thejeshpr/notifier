@@ -3,12 +3,13 @@ import requests
 import json
 import time
 from pprint import pprint
+import traceback
 
 from .air_post import AirPost
 from .TelePusher import TelePusher
 
 TELEGRAM_CHANNEL = os.environ.get("IG_TELEGRAM_CHANNEL")
-IG_POST_URL = os.environ.get("IG_POST_CODE")
+IG_POST_URL = os.environ.get("IG_POST_URL")
 
 class Posts(object):
     def __init__(self, igid, username, node):
@@ -45,11 +46,12 @@ class IG(object):
     def __init__(self, un):        
         self.url = os.environ.get("IG_BASE_URL")
         self.un = un
-        self.profile = self.get_profile()        
+        self.profile = self.get_profile()               
 
     def get_profile(self):
         headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"}
-        return requests.get(self.url.format(self.un), headers=headers).json()
+        res = requests.get(self.url.format(un=self.un), headers=headers)        
+        return res.json()
 
     def send_latest_posts(self):
         pusher = TelePusher(chat_id=TELEGRAM_CHANNEL)
@@ -83,3 +85,4 @@ class IG(object):
                 pusher.send_message(f"no latest posts of found for user {username}")
         except Exception as e:
             pusher.send_message(f"An error occured while fetcing posts of user: {self.un}")
+            print(traceback.format_exc())
