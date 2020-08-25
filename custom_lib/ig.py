@@ -51,6 +51,8 @@ class IG(object):
     def get_profile(self):
         headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"}
         res = requests.get(self.url.format(un=self.un), headers=headers)        
+        print(res.content)
+        print(res.status_code)
         return res.json()
 
     def send_latest_posts(self):
