@@ -42,4 +42,4 @@ class Covid19():
             status = "Success" if not error else "Error"
             msg = f"*Covid-19 Update: {status}*\n\n{msg}"
             pusher = TelePusher()
-            pusher.send_message(msg)
+            pusher.send_message(msg, disable_web_page_preview="True")

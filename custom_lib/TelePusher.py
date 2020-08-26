@@ -16,10 +16,10 @@ class TelePusher():
         
         return requests.get(url, params=payload).json()
         
-    def send_message(self, text: str):
+    def send_message(self, text: str, disable_web_page_preview = "False"):
         payload = {            
             "text": text,
-            "disable_web_page_preview": "True"
+            "disable_web_page_preview": disable_web_page_preview
         }
         return self.__dispatch(payload, "sendMessage")
         

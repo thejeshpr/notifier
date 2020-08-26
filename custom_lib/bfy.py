@@ -83,4 +83,4 @@ class Bfy(object):
         finally:
             status = "Success" if not error else "Error"
             msg = f"Bfy update: {status}\n\n{msg}"            
-            self.pusher.send_message(msg)
+            self.pusher.send_message(msg, disable_web_page_preview="True")

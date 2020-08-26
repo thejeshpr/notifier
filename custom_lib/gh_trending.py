@@ -35,5 +35,5 @@ class Gh(object):
             msg = f"Exception: {str(e)}"            
         finally:
             msg = f"GH Stats:\n\n{msg}"            
-            pusher.send_message(text=msg)
+            pusher.send_message(text=msg, disable_web_page_preview="True")
             
