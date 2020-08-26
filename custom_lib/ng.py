@@ -3,7 +3,6 @@ import os
 from pprint import pprint
 import time
 import traceback
-# from urllib.request import urlopen, Request, ProxyHandler, build_opener
 import requests
 
 from .air_post import AirPost
