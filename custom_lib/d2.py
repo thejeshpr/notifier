@@ -6,6 +6,7 @@ from custom_lib.base import Base
 
 D2_BASE_URL = os.environ.get('D2_BASE_URL')
 THRESHOLD = os.environ.get("D2_THRESHOLD")
+D2_TELEGRAM_CHANNEL = os.environ.get("D2_TELEGRAM_CHANNEL")
 
 class D2(Base):
     """

@@ -141,12 +141,12 @@ async def gh_trending(background_tasks: BackgroundTasks):
 
 @app.get("/d2/latest")
 async def d2_latest(background_tasks: BackgroundTasks):  
-    d2 = D2(ar_base="appLvXVtoZ6C4E8nl", ar_table="posts")
+    d2 = D2(ar_base="appLvXVtoZ6C4E8nl", ar_table="posts", tl_chat_id=os.environ.get('D2_TELEGRAM_CHANNEL'))
     background_tasks.add_task(d2.send_latest_posts)
     return res(f"Information dispatched")
 
 @app.get("/d2/clean-up")
 async def d2_clean_up(background_tasks: BackgroundTasks, simulate: Optional[bool] = False):    
-    d2 = D2(ar_base="appLvXVtoZ6C4E8nl", ar_table="posts")
+    d2 = D2(ar_base="appLvXVtoZ6C4E8nl", ar_table="posts", tl_chat_id=os.environ.get('D2_TELEGRAM_CHANNEL'))
     background_tasks.add_task(d2.remove_posts, simulate)
     return res(f"task initiated")
