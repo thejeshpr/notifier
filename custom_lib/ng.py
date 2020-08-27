@@ -13,6 +13,7 @@ PHANTOM_URL = os.environ.get("PHANTOM_URL")
 PHANTOM_KEY = os.environ.get("PHANTOM_KEY")
 BASE_URL = os.environ.get("NG_BASE_URL")
 TELEGRAM_CHANNEL = os.environ.get("NG_TELEGRAM_CHANNEL")
+THRESHOLD = os.environ.get("NG_THRESHOLD")
 
 class NgException(Exception):
     pass
@@ -88,3 +89,15 @@ class Ng(object):
             msg = f"An error occured while retriving the posts: {e}"
             print(traceback.format_exc())            
             pusher.send_message(text=msg)
+
+    @classmethod
+    def remove_posts(cls, simulate):
+        pusher = TelePusher(chat_id=TELEGRAM_CHANNEL)
+        try:
+            ap = AirPost("appqzdWspiYMEZxLy", "posts")        
+            removed_posts = ap.clean_up(THRESHOLD, simulate=simulate)        
+            pusher.send_message(f"{len(removed_posts)} posts deleted")
+        except Exception as e:
+            pusher.send_message(f"An error occured while clean-up: {e}")
+            print(traceback.format_exc())
+        

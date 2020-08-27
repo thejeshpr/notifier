@@ -31,7 +31,7 @@ class AirPost(object):
         self.at.batch_insert(new_posts)
         return new_posts
         
-    def clean_up(self, identifier, threshold):
+    def clean_up(self, threshold, simulate=False):
         """
         clean up posts based on created time by comparing threshold value
         """
@@ -39,8 +39,9 @@ class AirPost(object):
         formula = f"( DATETIME_DIFF(TODAY(), CREATED_TIME(), 'days') >= {threshold})"
         records = self.at.get_all(formula=formula)
 
-        posts_to_remove = [rec.get(identifier) for rec in records]
-        self.at.batch_delete(posts_to_remove)
+        posts_to_remove = [rec.get("id") for rec in records]
+        if not simulate:
+            self.at.batch_delete(posts_to_remove)
 
         return posts_to_remove
         

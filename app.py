@@ -112,6 +112,10 @@ async def get_model(background_tasks: BackgroundTasks, grp: NGGroup, typ: NGType
     background_tasks.add_task(obj.send_latest_posts)
     return res(f"task initiated")
 
+@app.get("/ng/clean-up")
+async def ng_clean_up(background_tasks: BackgroundTasks, simulate: Optional[bool] = False):    
+    background_tasks.add_task(Ng.remove_posts, simulate)
+    return res(f"task initiated")
 
 
 @app.get("/ig/{usr}")
