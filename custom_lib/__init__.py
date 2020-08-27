@@ -10,6 +10,7 @@ from .course import Course
 from .air_post import AirPost
 from .gh_trending import Gh
 from .copra import Copra
+from .d2 import D2
 
 
 from .options import *

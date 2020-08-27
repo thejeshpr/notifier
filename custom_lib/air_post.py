@@ -26,7 +26,7 @@ class AirPost(object):
         fetched_posts_id = list(posts.keys())
         new_posts_id = list(set(fetched_posts_id) - set(existing_posts_id))
         
-        new_posts = [posts[uid] for uid in new_posts_id]
+        new_posts = [posts[uid] for uid in new_posts_id]        
                 
         self.at.batch_insert(new_posts)
         return new_posts

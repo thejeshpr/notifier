@@ -21,7 +21,8 @@ from custom_lib import (
     Payload,
     fire_get,
     Gh,
-    Copra
+    Copra,
+    D2
     )
 
 app = FastAPI()
@@ -138,7 +139,14 @@ async def gh_trending(background_tasks: BackgroundTasks):
     return res(f"Information dispatched")
 
 
-@app.get("/copra/latest")
-async def copra_latest(background_tasks: BackgroundTasks):    
-    background_tasks.add_task(Copra.send_latest_info)
+@app.get("/d2/latest")
+async def d2_latest(background_tasks: BackgroundTasks):  
+    d2 = D2(ar_base="appLvXVtoZ6C4E8nl", ar_table="posts")
+    background_tasks.add_task(d2.send_latest_posts)
     return res(f"Information dispatched")
+
+@app.get("/d2/clean-up")
+async def d2_clean_up(background_tasks: BackgroundTasks, simulate: Optional[bool] = False):    
+    d2 = D2(ar_base="appLvXVtoZ6C4E8nl", ar_table="posts")
+    background_tasks.add_task(d2.remove_posts, simulate)
+    return res(f"task initiated")
