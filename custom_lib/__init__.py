@@ -9,6 +9,7 @@ from .news import News
 from .course import Course
 from .air_post import AirPost
 from .gh_trending import Gh
+from .copra import Copra
 
 
 from .options import *

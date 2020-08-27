@@ -12,11 +12,11 @@ class TelePusher():
         url = f"{self.base_url}/{msg_type}"
 
         payload['chat_id'] = f"@{self.__chat_id}"
-        payload['parse_mode'] = 'markdown'                
+        payload['parse_mode'] = 'markdown'               
         
         return requests.get(url, params=payload).json()
         
-    def send_message(self, text: str, disable_web_page_preview = "False"):
+    def send_message(self, text: str, disable_web_page_preview="False"):
         payload = {            
             "text": text,
             "disable_web_page_preview": disable_web_page_preview

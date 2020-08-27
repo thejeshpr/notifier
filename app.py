@@ -20,7 +20,8 @@ from custom_lib import (
     Unsplash,
     Payload,
     fire_get,
-    Gh
+    Gh,
+    Copra
     )
 
 app = FastAPI()
@@ -130,4 +131,10 @@ async def fire(payload: Payload):
 @app.get("/gh/trending")
 async def gh_trending(background_tasks: BackgroundTasks):    
     background_tasks.add_task(Gh.send_trending_repos)
+    return res(f"Information dispatched")
+
+
+@app.get("/copra/latest")
+async def copra_latest(background_tasks: BackgroundTasks):    
+    background_tasks.add_task(Copra.send_latest_info)
     return res(f"Information dispatched")
