@@ -22,7 +22,8 @@ from custom_lib import (
     fire_get,
     Gh,
     Copra,
-    D2
+    D2,
+    get_price,
     )
 
 app = FastAPI()
@@ -149,4 +150,11 @@ async def d2_latest(background_tasks: BackgroundTasks):
 async def d2_clean_up(background_tasks: BackgroundTasks, simulate: Optional[bool] = False):    
     d2 = D2(ar_base="appLvXVtoZ6C4E8nl", ar_table="posts", tl_chat_id=os.environ.get('D2_TELEGRAM_CHANNEL'))
     background_tasks.add_task(d2.remove_posts, simulate)
+    return res(f"task initiated")
+
+
+@app.get("/get_price")
+async def price_tracker(background_tasks: BackgroundTasks):    
+    url = "https://www.myntra.com/tshirts/wrogn/wrogn-men-teal-blue-printed-round-neck-t-shirt/2033074/buy"
+    background_tasks.add_task(get_price, url)
     return res(f"task initiated")
