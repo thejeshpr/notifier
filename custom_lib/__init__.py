@@ -25,3 +25,6 @@ from .models import *
 
 
 from .utilities import fire_get
+
+
+from .pricetracker import get_price
