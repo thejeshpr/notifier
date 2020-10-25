@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %} Tasks | Loopholes {% endblock %}
+
+{% block content %}
+
+{% set url_name = 'latest_tasks' %}
+
+{% include 'pagination.html' %}
+
+<div>
+  {% for item in items %}
+  <div class="row">
+     <div class="col col-12">
+        <div class="card">
+           <div class="card-body">
+              <h5 class="card-title"><i class="las la-file"></i> # {{ item.id }} : <span class="text-muted">{{ item.name }}</span></h5>
+              <h6 class="card-subtitle mb-2"><i class="las la-key"></i> Key: <span class="unique-key">{{ item.unique_key }}</span></h6>
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-sync"></i> Type: <a href="{{ request.url_for('sync_type', id=item.sync_type.id) }}">{{ item.sync_type.name }}</a></h6>
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar-alt"></i> Timestamp: {{ item.created_at }}</h6>
+              <hr/>
+              <p>                    
+                 <code class="loop-code">
+                 <strong><i class="las la-link"></i> URL:</strong> <a href="{{ item.url }}" target="_blank">{{ item.url }}</a><br/>                      
+                 {% for key in item.data %}                        
+                 <strong><i class="las la-feather-alt"></i> {{ key }}</strong>: {{ item.data.get(key) }}
+                 <br/>                        
+                 {% endfor %}
+                 </code>
+              </p>
+           </div>
+        </div>
+        <br/>
+     </div>
+  </div>
+  {% else %}
+  <div class="justify-content-center">
+    <h1>No Tasks found</h1>
+  </div>
+  {% endfor %}
+</div>
+
+{% include 'pagination.html' %}
+
+{% endblock %}
