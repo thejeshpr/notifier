@@ -10,7 +10,7 @@ class AirPost(object):
         """
         return all posts
         """
-        return self.at.get_all()
+        return self.at.get_all(fo)
     
     def insert(self, posts, unique_id: str):
         """

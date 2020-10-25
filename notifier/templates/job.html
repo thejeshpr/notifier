@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %} Job:{{ job.sync_type.name }} | Loopholes {% endblock %}
+
+{% block content %}
+    <div>
+        <div class="row">
+            <div class="col col-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="float-right">
+                            {% if job.status == "PRODUCTIVE" %}
+                            <span class="badge badge-success">GOOD</span> {% elif job.status == "COMPLETED" %}
+                            <span class="badge badge-primary">OK</span> {% elif job.status == "FAILED" %}
+                            <span class="badge badge-danger">BAD</span> {% elif job.status == "STARTED" %}
+                            <span class="badge badge-pill badge-dark">OooooO</span> {% endif %}
+                        </div>
+                        <h5 class="card-title"><i class="las la-business-time"></i> #{{ job.id }}: <span class="text-muted">{{ job.sync_type.name }} ({{ job.extras.url_query }})</span></h5>
+                        <!-- <h6 class="card-subtitle mb-2 text-muted"><i class="las la-key"></i> Key: {{ job.unique_key }}</h6> -->
+                        <h6 class="card-subtitle mb-2"><i class="las la-key"></i> Key: <span class="unique-key">{{ job.unique_key }}</span></h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ job.created_at }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i>  Tasks: {{ job.tasks | length }}</h6>
+                        <hr/>
+                        <p>
+                            <code>                                                  
+                                <strong><i class="las la-ellipsis-h"></i> Client IP:</strong> {{ job.extras.client_ip }}<br/>
+                                <strong><i class="las la-link"></i> URL Path:</strong> {{ job.extras.url_path }}<br/>
+                                <strong><i class="las la-link"></i> URL Query:</strong> {{ job.extras.url_query }}<br/>
+                                <strong>Error:</strong> {{ job.err }}
+                    </code>
+                        </p>
+                        <!-- <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a> -->
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+    <hr/>    
+
+    <div>
+        {% for item in tasks %}
+        <div class="row">
+            <div class="col col-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="las la-tasks"></i> # {{ item.id }} : <span class="text-muted">{{ item.name }}</span></h5>
+                        <h6 class="card-subtitle mb-2"><i class="las la-key"></i> Key: <span class="unique-key">{{ item.unique_key }}</span></h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-sync"></i> Type: {{ item.sync_type.name }}</h6>                        
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ item.created_at }}</h6>
+                        <hr/>
+                        <p>
+                            <code class="loop-code">
+                            <strong><i class="las la-link"></i> URL:</strong> <a href="{{ item.url }}" target="_blank">{{ item.url }}</a><br/>                      
+                        {% for key in item.data %}                        
+                            <strong><i class="las la-feather-alt"></i> {{ key }}</strong>: {{ item.data.get(key) }}
+                            <br/>                        
+                        {% endfor %}
+                    </code>
+                        </p>
+
+                        <!-- <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a> -->
+                    </div>
+                </div>
+                <br/>
+
+            </div>
+        </div>
+        {% else %}
+        <h1>No Tasks found</h1>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -150,3 +150,5 @@ async def d2_clean_up(background_tasks: BackgroundTasks, simulate: Optional[bool
     d2 = D2(ar_base="appLvXVtoZ6C4E8nl", ar_table="posts", tl_chat_id=os.environ.get('D2_TELEGRAM_CHANNEL'))
     background_tasks.add_task(d2.remove_posts, simulate)
     return res(f"task initiated")
+
+from notify import

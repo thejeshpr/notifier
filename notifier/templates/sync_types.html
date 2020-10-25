@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}SyncTypes | Loopholes {% endblock %}
+
+
+{% block content %}
+<div class="">
+  {% for item in items %}
+  <div class="row">
+     <div class="col col-12">
+        <div class="card">
+           <div class="card-body">
+              
+              <h5 class="card-title"><i class="las la-sync"></i> #{{ item.id }}: <span class="text-muted"><a href="{{ request.url_for('sync_type', id=item.id) }}">{{ item.name }}</a></span></h5>
+              <!-- <h6 class="card-subtitle mb-2">Key: <span class="unique-key">{{ item.unique_key }}</span></h6> -->
+              <!-- <h6 class="card-subtitle mb-2 text-muted">Key: {{ item.unique_key }}</h6> -->
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar-alt"></i> Timestamp: {{ item.created_at }}</h6>
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i> Jobs: {{ item.jobs | length }}</h6>
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i> Tasks: {{ item.tasks | length }}</h6>
+              <hr/>
+              <p>
+                 <code>
+                    <strong><i class="las la-toggle-off"></i> Enabled:</strong> {{ item.enabled }}<br/>
+                    <strong><i class="las la-lock"></i> Is Locked:</strong> {{ item.locked }}<br/>
+                    <strong><i class="las la-paper-plane"></i> Dispatch To:</strong> {{ item.dispatch_to }}<br/>
+                    <strong><i class="las la-bell"></i> Notification Disabled:</strong> {{ item.disable_notifiaction }}<br/>
+                    <strong><i class="las la-anchor"></i> Base URL:</strong> {{ item.base_url }}<br/>
+                    <strong><i class="las la-list"></i> Extras:</strong> {{ item.extras }}
+                 </code>
+              </p>
+              <!-- <a href="#" class="card-link">Card link</a>
+              <a href="#" class="card-link">Another link</a> -->
+           </div>
+        </div>
+        <br/>
+     </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

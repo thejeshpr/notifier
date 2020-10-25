@@ -136,3 +136,6 @@ blueprint.txt
 
 
 extras/
+
+*.db
+

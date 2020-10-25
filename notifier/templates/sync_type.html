@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %} ST:{{ sync_type.name }} | Loopholes {% endblock %}
+
+{% block content %}
+    <div>
+        <div class="row">
+            <div class="col col-12">
+
+                <div class="card">
+                    <div class="card-body">                        
+                        <h5 class="card-title"><i class="las la-sync"></i> # {{ sync_type.id }}: <span class="text-muted">{{ sync_type.name }}</span></h5>                        
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ sync_type.created_at }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i>  Jobs: {{ sync_type.jobs | length }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i>  Tasks: {{ sync_type.tasks | length }}</h6>
+                        <hr/>
+                        <p>
+                            <code>                                                  
+                                <strong><i class="las la-toggle-off"></i> Enabled:</strong> {{ sync_type.enabled }}<br/>
+                                <strong><i class="las la-lock"></i> Is Locked:</strong> {{ sync_type.locked }}<br/>
+                                <strong><i class="las la-paper-plane"></i> Dispatch To:</strong> {{ sync_type.dispatch_to }}<br/>
+                                <strong><i class="las la-bell"></i> Notification Disabled:</strong> {{ sync_type.disable_notifiaction }}<br/>
+                                <strong><i class="las la-anchor"></i> Base URL:</strong> {{ sync_type.base_url }}<br/>
+                                <strong><i class="las la-list"></i> Extras:</strong> {{ sync_type.extras }}
+                            </code>
+                        </p>
+                    </div>
+                </div>                
+
+            </div>
+        </div>
+    </div>
+
+    <hr/>    
+
+    <!-- Job -->
+    <div>
+        <div class="row">
+            <div class="col col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="las la-business-time"></i> Jobs</h5>
+                        <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col"><i class="las la-key"></i> Key</th>
+                                <th scope="col"><i class="las la-tasks"></i> Tasks</th>
+                                <th scope="col"><i class="las la-calendar"></i> Timestamp</th>
+                                <th scope="col"><i class="las la-question-circle"></i> Status</th>
+                                <th scope="col"><i class="las la-code"></i> Args</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in jobs %}
+                                <tr>
+                                    <th scope="row">{{ job.id }}</th>
+                                    <td><a href="{{ request.url_for('job', id=job.id) }}">{{ job.unique_key }}</a></td>
+                                    <td>{{ job.tasks | length }}</td>
+                                    <td>{{ job.created_at }}</td>
+                                    <td>
+                                        {% if job.status == "PRODUCTIVE" %}
+                                        <span class="badge badge-success"><i class="las la-check-circle"></i> GOOD</span>
+                                        {% elif job.status == "COMPLETED" %}
+                                        <span class="badge badge-primary"><i class="las la-check-double"></i> OK</span>
+                                        {% elif job.status == "FAILED" %}
+                                        <span class="badge badge-danger"><i class="las la-times-circle"></i> BAD</span>
+                                        {% elif job.status == "STARTED" %}                  
+                                        <span class="badge badge-pill badge-dark"><i class="las la-running"></i> OooOooO</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><code>{{ job.extras.url_query }}</code></td>
+                                  </tr>
+                                {% endfor %}                                                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Job end -->
+
+    <hr/>    
+
+    <div>
+        {% for item in tasks %}
+        <div class="row">
+            <div class="col col-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="las la-tasks"></i> # {{ item.id }} : <span class="text-muted">{{ item.name }}</span></h5>                        
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-key"></i> Key: {{ item.unique_key }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ item.created_at }}</h6>
+                        <hr/>
+                        <p>
+                            <code class="loop-code">
+                            <strong><i class="las la-link"></i> URL:</strong> <a href="{{ item.url }}" target="_blank">{{ item.url }}</a><br/>                      
+                        {% for key in item.data %}                        
+                            <strong><i class="las la-feather-alt"> </i>{{ key }}</strong>: {{ item.data.get(key) }}
+                        <br/>                        
+                        {% endfor %}
+                    </code>
+                        </p>
+
+                        <!-- <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a> -->
+                    </div>
+                </div>
+                <br/>
+
+            </div>
+        </div>
+        {% else %}
+        <h1>No Tasks found</h1>
+        {% endfor %}
+    </div>
+{% endblock %}

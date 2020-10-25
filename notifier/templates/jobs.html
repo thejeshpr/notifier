@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %} Jobs | Loopholes {% endblock %}
+
+{% set url_name = 'latest_jobs' %}
+
+{% include 'pagination.html' %}
+
+{% block content %}
+<div class="">
+  {% for item in items %}
+  <div class="row">
+     <div class="col col-12">
+        <div class="card">
+           <div class="card-body">
+              <div class="float-right">
+                 {% if item.status == "PRODUCTIVE" %}
+                 <span class="badge badge-success"><i class="las la-check-circle"></i> GOOD</span>
+                 {% elif item.status == "COMPLETED" %}
+                 <span class="badge badge-primary"><i class="las la-check-double"></i> OK</span>
+                 {% elif item.status == "FAILED" %}
+                 <span class="badge badge-danger"><i class="las la-times-circle"></i> BAD</span>
+                 {% elif item.status == "STARTED" %}                  
+                 <span class="badge badge-pill badge-dark"><i class="las la-running"></i> OooOooO</span>
+                 {% endif %}
+              </div>
+              <h5 class="card-title"><i class="las la-business-time"></i> #{{ item.id }}: <span class="text-muted"><a href="{{ request.url_for('job', id=item.id) }}">{{ item.sync_type.name }} ({{ item.extras.url_query }})</a></span></h5>
+              <h6 class="card-subtitle mb-2"><i class="las la-key"></i> <span class="unique-key">{{ item.unique_key }}</span></h6>
+              <!-- <h6 class="card-subtitle mb-2 text-muted">Key: {{ item.unique_key }}</h6> -->
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> {{ item.created_at }}</h6>
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i> Tasks: {{ item.tasks | length }}</h6>
+              <hr/>
+              <p>
+                 <code>
+                  <strong><i class="las la-ellipsis-h"></i> Client IP:</strong> {{ item.extras.client_ip }}<br/>
+                  <strong><i class="las la-link"></i> URL Path:</strong> {{ item.extras.url_path }}<br/>
+                  <strong><i class="las la-link"></i> URL Query:</strong> {{ item.extras.url_query }}<br/>
+                 Error: {{ item.err }}
+                 </code>
+              </p>
+              <!-- <a href="#" class="card-link">Card link</a>
+              <a href="#" class="card-link">Another link</a> -->
+           </div>
+        </div>
+        <br/>
+     </div>
+  </div>
+  {% else %}
+  <div class="justify-content-center">
+    <h1>No Jobs found</h1>
+  </div>
+  {% endfor %}
+</div>
+
+{% include 'pagination.html' %}
+
+{% endblock %}
