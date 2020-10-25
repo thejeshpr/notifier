@@ -9,8 +9,8 @@ from notifier.db import models
 
 
 # create tables if not found
-Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
+# Base.metadata.drop_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 # Base.metadata.drop_all(bind=engine, tables=[models.Task.__table__])
 # Base.metadata.create_all(bind=engine, tables=[models.Task.__table__])
 
