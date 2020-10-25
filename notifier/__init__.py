@@ -8,7 +8,6 @@ from notifier.db import SessionLocal, db_cursor
 
 SAWWGER_END_POINT = os.environ.get("SAWWGER_END_POINT")
 REDOC_END_POINT = os.environ.get("REDOC_END_POINT")
-DEBUG = os.environ.get("DEBUG", False)
 
 app = FastAPI(
     title="LoopHoles",

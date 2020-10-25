@@ -69,7 +69,7 @@ class Task(Base):
     data        = Column(JSON, nullable=True)
     id          = Column(Integer, unique=True, primary_key=True, autoincrement=True)
     job         = relationship("Job", back_populates="tasks")
-    job_id      = Column(String, ForeignKey('jobs.id'))
+    job_id      = Column(Integer, ForeignKey('jobs.id'))
     name          = Column(Text, nullable=True)
     sync_type     = relationship("SyncType", back_populates="tasks")
     sync_type_id  = Column(Integer, ForeignKey('sync_type.id'))

@@ -16,7 +16,7 @@ from notifier import app, templates
 
 
 SECRET = os.environ.get("SECRET")
-DEBUG = os.environ.get("DEBUG", False)
+DEBUG_FLAG = os.environ.get("DEBUG", False)
 
 class User(models.BaseUser):
     pass
@@ -45,7 +45,7 @@ def on_after_forgot_password(user: UserDB, token: str, request: Request):
     pass
 
 
-if DEBUG:
+if DEBUG_FLAG:
     cookie_secure=False
 else:
     cookie_secure=True
@@ -74,7 +74,7 @@ app.include_router(
 )
 
 
-if DEBUG:
+if DEBUG_FLAG:
     # include reg router 
     app.include_router(
         fastapi_users.get_register_router(on_after_register), prefix="/auth", tags=["auth"]
