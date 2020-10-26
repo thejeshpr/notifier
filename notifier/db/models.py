@@ -99,4 +99,5 @@ class PriceTracker(Base):
 
 
 class UserTable(Base, SQLAlchemyBaseUserTable):
+    # created_at  = Column(sa.DateTime, default=get_current_time)
     pass

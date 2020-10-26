@@ -34,6 +34,8 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 # async db cursor
 ASYNC_DB_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}"
+# ASYNC_DB_URL = SQLALCHEMY_DATABASE_URL
+
 db_cursor = databases.Database(ASYNC_DB_URL)
 
 

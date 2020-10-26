@@ -2,16 +2,18 @@
 
 
 import os
+from datetime import date, datetime, time, timedelta
+from typing import Optional
+
 from fastapi import Request
 from fastapi_users import FastAPIUsers, models
 from fastapi_users.authentication import CookieAuthentication
 from fastapi_users.db import SQLAlchemyUserDatabase
-
-
 from fastapi.responses import HTMLResponse
+
 from notifier.db import db_cursor as database
 from notifier.db import Base, engine
-from notifier.db.models import UserTable
+from notifier.db.models import UserTable, get_current_time
 from notifier import app, templates
 
 

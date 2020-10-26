@@ -17,6 +17,8 @@ from notifier.db import models
 # Base.metadata.drop_all(bind=engine, tables=[models.Job.__table__, models.Task.__table__])
 # Base.metadata.create_all(bind=engine, tables=[models.Job.__table__, models.Task.__table__])
 
+# Base.metadata.drop_all(bind=engine, tables=[models.UserTable.__table__])
+# Base.metadata.create_all(bind=engine, tables=[models.UserTable.__table__])
 
 
 API_VER = "v1"

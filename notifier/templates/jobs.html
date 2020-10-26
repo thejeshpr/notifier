@@ -11,28 +11,41 @@
   {% for item in items %}
   <div class="row">
      <div class="col col-12">
-        <div class="card">
+        <div class="card dark-mode">
            <div class="card-body">
               <div class="float-right">
                  {% if item.status == "PRODUCTIVE" %}
-                 <span class="badge badge-success"><i class="las la-check-circle"></i> GOOD</span>
+                  <span class="badge badge-success"><i class="las la-check-circle"></i> GOOD</span>
                  {% elif item.status == "COMPLETED" %}
-                 <span class="badge badge-primary"><i class="las la-check-double"></i> OK</span>
+                  <span class="badge badge-primary"><i class="las la-check-double"></i> OK</span>
                  {% elif item.status == "FAILED" %}
-                 <span class="badge badge-danger"><i class="las la-times-circle"></i> BAD</span>
+                  <span class="badge badge-danger"><i class="las la-times-circle"></i> BAD</span>
                  {% elif item.status == "STARTED" %}                  
-                 <span class="badge badge-pill badge-dark"><i class="las la-running"></i> OooOooO</span>
+                  <span class="badge badge-pill badge-dark"><i class="las la-running"></i> OooOooO</span>
                  {% endif %}
               </div>
-              <h5 class="card-title"><i class="las la-business-time"></i> #{{ item.id }}: <span class="text-muted"><a href="{{ request.url_for('job', id=item.id) }}">{{ item.sync_type.name }} ({{ item.extras.url_query }})</a></span></h5>
-              <h6 class="card-subtitle mb-2"><i class="las la-key"></i> <span class="unique-key">{{ item.unique_key }}</span></h6>
+              <!-- <h5 class="card-title"><i class="las la-business-time"></i> #{{ item.id }}: <span class="text-muted"><a href="{{ request.url_for('job', id=item.id) }}">{{ item.sync_type.name }} ({{ item.extras.url_query }})</a></span></h5> -->              
+              <h5 class="card-title">
+                 <span class="licon">
+                    <i class="las la-business-time"></i> #{{ item.id }}: 
+                  </span>
+                 <a href="{{ request.url_for('job', id=item.id) }}">
+                  <span class="text-muted job-unique-key">
+                     {% set key = item.unique_key.split(':') %}                     
+                     <span class="ltitle">{{ key[0] }}</span>
+                     <span class="badge badge-light">{{ key[1] }}</span>
+                     <!-- <span style="color: green">{{ key[2] }}</span> -->
+                  </span>
+                 </a>
+               </h5>
+              <!-- <h6 class="card-subtitle mb-2"><i class="las la-key"></i> <span class="unique-key">{{ item.unique_key }}</span></h6> -->
               <!-- <h6 class="card-subtitle mb-2 text-muted">Key: {{ item.unique_key }}</h6> -->
               <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> {{ item.created_at }}</h6>
               <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i> Tasks: {{ item.tasks | length }}</h6>
-              <hr/>
+              <hr class="dm-background"/>
               <p>
-                 <code>
-                  <strong><i class="las la-ellipsis-h"></i> Client IP:</strong> {{ item.extras.client_ip }}<br/>
+                 <code class="loop-code">
+                  <strong><i class="las la-arrow-alt-circle-right"></i> Client IP:</strong> {{ item.extras.client_ip }}<br/>
                   <strong><i class="las la-link"></i> URL Path:</strong> {{ item.extras.url_path }}<br/>
                   <strong><i class="las la-link"></i> URL Query:</strong> {{ item.extras.url_query }}<br/>
                  Error: {{ item.err }}
@@ -46,9 +59,9 @@
      </div>
   </div>
   {% else %}
-  <div class="justify-content-center">
-    <h1>No Jobs found</h1>
-  </div>
+   <div class="d-flex justify-content-center licon">
+      <h1>No Jobs found <i class="las la-frown"></i></h1>    
+   </div>
   {% endfor %}
 </div>
 

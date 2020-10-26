@@ -7,19 +7,27 @@
         <div class="row">
             <div class="col col-12">
 
-                <div class="card">
+                <div class="card dark-mode">
                     <div class="card-body">                        
-                        <h5 class="card-title"><i class="las la-sync"></i> # {{ sync_type.id }}: <span class="text-muted">{{ sync_type.name }}</span></h5>                        
+                        <!-- <h5 class="card-title"><i class="las la-sync"></i> # {{ sync_type.id }}: <span class="text-muted">{{ sync_type.name }}</span></h5>                         -->
+                        <h5 class="card-title">
+                            <span class="licon">
+                               <i class="las la-sync"></i> #{{ sync_type.id }}: 
+                            </span>
+                            <a href="{{ request.url_for('sync_type', id=sync_type.id) }}">
+                               <span class="text-muted ltitle">{{ sync_type.name }}</span>
+                            </a>
+                         </h5>              
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ sync_type.created_at }}</h6>
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i>  Jobs: {{ sync_type.jobs | length }}</h6>
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i>  Tasks: {{ sync_type.tasks | length }}</h6>
-                        <hr/>
+                        <hr class="dm-background"/>
                         <p>
-                            <code>                                                  
+                            <code class="loop-code">                                                  
                                 <strong><i class="las la-toggle-off"></i> Enabled:</strong> {{ sync_type.enabled }}<br/>
                                 <strong><i class="las la-lock"></i> Is Locked:</strong> {{ sync_type.locked }}<br/>
                                 <strong><i class="las la-paper-plane"></i> Dispatch To:</strong> {{ sync_type.dispatch_to }}<br/>
-                                <strong><i class="las la-bell"></i> Notification Disabled:</strong> {{ sync_type.disable_notifiaction }}<br/>
+                                <strong><i class="las la-bell"></i> Dispatch Notification:</strong> {{ sync_type.dispatch_notification }}<br/>
                                 <strong><i class="las la-anchor"></i> Base URL:</strong> {{ sync_type.base_url }}<br/>
                                 <strong><i class="las la-list"></i> Extras:</strong> {{ sync_type.extras }}
                             </code>
@@ -31,33 +39,38 @@
         </div>
     </div>
 
-    <hr/>    
+    <hr class="dark-mode"/>    
 
     <!-- Job -->
     <div>
         <div class="row">
             <div class="col col-12">
-                <div class="card">
+                <div class="card dark-mode">
                     <div class="card-body">
-                        <h5 class="card-title"><i class="las la-business-time"></i> Jobs</h5>
-                        <table class="table table-hover">
+                        <h5 class="card-title ltitle" style="color: white;"><i class="las la-business-time"></i> Jobs</h5>
+                        <table class="table table-dark table-responsive">
                             <thead>
-                              <tr>
-                                <th scope="col">#</th>
-                                <th scope="col"><i class="las la-key"></i> Key</th>
+                              <tr class="ltitle" style="color: white;">
+                                <th scope="col">#</th>                                
+                                <th scope="col"><i class="las la-key"></i> Key</th>  
+                                <th scope="col"><i class="las la-question-circle"></i> Status</th>                                
                                 <th scope="col"><i class="las la-tasks"></i> Tasks</th>
-                                <th scope="col"><i class="las la-calendar"></i> Timestamp</th>
-                                <th scope="col"><i class="las la-question-circle"></i> Status</th>
-                                <th scope="col"><i class="las la-code"></i> Args</th>
+                                <!-- <th scope="col"><i class="las la-calendar"></i> Timestamp</th> -->                                
+                                <th scope="col"><i class="las la-code"></i> Args</th>                                                                               
                               </tr>
                             </thead>
                             <tbody>
                                 {% for job in jobs %}
                                 <tr>
-                                    <th scope="row">{{ job.id }}</th>
-                                    <td><a href="{{ request.url_for('job', id=job.id) }}">{{ job.unique_key }}</a></td>
-                                    <td>{{ job.tasks | length }}</td>
-                                    <td>{{ job.created_at }}</td>
+                                    <th scope="row"><a href="{{ request.url_for('job', id=job.id) }}" class="licon">{{ job.id }}</a></th>
+                                    <td>
+                                        <a href="{{ request.url_for('job', id=job.id) }}" class="job-unique-key">
+                                            {% set key = job.unique_key.split(':') %}                     
+                                            <!-- <span class="ltitle">{{ key[0] }}</span> -->
+                                            <span class="badge badge-light">{{ key[1] }}</span>
+                                            <!-- <span class="text-muted">{{ key[2] }}</span> -->
+                                        </a>
+                                    </td>                                                                
                                     <td>
                                         {% if job.status == "PRODUCTIVE" %}
                                         <span class="badge badge-success"><i class="las la-check-circle"></i> GOOD</span>
@@ -69,7 +82,9 @@
                                         <span class="badge badge-pill badge-dark"><i class="las la-running"></i> OooOooO</span>
                                         {% endif %}
                                     </td>
-                                    <td><code>{{ job.extras.url_query }}</code></td>
+                                    <td class="licon">{{ job.tasks | length }}</td>
+                                    <!-- <td>{{ job.created_at }}</td> -->                                    
+                                    <td><code>{{ job.extras.url_query }}</code></td>   
                                   </tr>
                                 {% endfor %}                                                            
                             </tbody>
@@ -88,24 +103,29 @@
         <div class="row">
             <div class="col col-12">
 
-                <div class="card">
+                <div class="card dark-mode">
                     <div class="card-body">
-                        <h5 class="card-title"><i class="las la-tasks"></i> # {{ item.id }} : <span class="text-muted">{{ item.name }}</span></h5>                        
-                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-key"></i> Key: {{ item.unique_key }}</h6>
+                        <!-- <h5 class="card-title"><i class="las la-tasks"></i> # {{ item.id }} : <span class="text-muted">{{ item.name }}</span></h5>                         -->
+                        <h5 class="card-title">
+                            <span class="licon">
+                                <i class="las la-file"></i> # {{ item.id }} :
+                             </span> 
+                             <a href="{{ item.url }}" target="_blank">
+                                <span class="text-muted ltitle">{{ item.name }}</span>
+                             </a>               
+                        </h5>
+                        <!-- <h6 class="card-subtitle mb-2 text-muted"><i class="las la-key"></i> Key: {{ item.unique_key }}</h6> -->
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ item.created_at }}</h6>
-                        <hr/>
+                        <hr class="dm-background"/>
                         <p>
-                            <code class="loop-code">
-                            <strong><i class="las la-link"></i> URL:</strong> <a href="{{ item.url }}" target="_blank">{{ item.url }}</a><br/>                      
-                        {% for key in item.data %}                        
-                            <strong><i class="las la-feather-alt"> </i>{{ key }}</strong>: {{ item.data.get(key) }}
-                        <br/>                        
-                        {% endfor %}
-                    </code>
+                            <code class="loop-code">                            
+                            {% for key in item.data %}                        
+                                <strong><i class="las la-feather-alt"></i> {{ key }}</strong>: {{ item.data.get(key) }}
+                            <br/>                        
+                            {% endfor %}
+                            </code>
                         </p>
 
-                        <!-- <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a> -->
                     </div>
                 </div>
                 <br/>
@@ -113,7 +133,9 @@
             </div>
         </div>
         {% else %}
-        <h1>No Tasks found</h1>
+        <div class="d-flex justify-content-center licon">
+            <h1>No Tasks found <i class="las la-frown"></i></h1>    
+        </div>
         {% endfor %}
     </div>
 {% endblock %}

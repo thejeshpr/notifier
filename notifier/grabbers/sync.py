@@ -1,7 +1,10 @@
+import os
 from uuid import uuid4
+from datetime import datetime
 
 from fastapi import Request
 from sqlalchemy.orm import Session
+import pytz
 
 from notifier.grabbers.base import Base
 from notifier.grabbers.tracker import PriceTrackerSync
@@ -36,7 +39,7 @@ SYNC_GRABBERS = {
 class Sync(object):
     def __init__(self, sync_type: str, db: Session, request: Request, *args, **kwargs):        
         self.sync_type = sync_type
-        self.job_id = f"{sync_type}:{uuid4()}"
+        self.job_id = f"{sync_type}:{self.get_current_time()}:{uuid4()}"
         self.obj = Base(sync_type, self.job_id, db, request)
         self.args = args
         self.kwargs = kwargs
@@ -72,3 +75,11 @@ class Sync(object):
         """
         if self.obj.sync_type.enabled:
             func(*args, **kwargs)
+
+    def get_current_time(self):
+        fmt = "%H.%M-%D"
+        utcmoment_naive = datetime.utcnow()        
+        utcmoment = utcmoment_naive.replace(tzinfo=pytz.utc)
+        tz = os.environ.get("TZ")
+        conv_dt = utcmoment.astimezone(pytz.timezone(tz))
+        return conv_dt.strftime(fmt)
