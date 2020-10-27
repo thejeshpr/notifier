@@ -33,14 +33,16 @@
                   <span class="text-muted job-unique-key">
                      {% set key = item.unique_key.split(':') %}                     
                      <span class="ltitle">{{ key[0] }}</span>
-                     <span class="badge badge-light">{{ key[1] }}</span>
+                     <!-- <span class="badge badge-light">{{ key[1] }}</span> -->
                      <!-- <span style="color: green">{{ key[2] }}</span> -->
+                     {% if item.extras.url_query %} ({{ item.extras.url_query }}){% endif %}
                   </span>
                  </a>
                </h5>
               <!-- <h6 class="card-subtitle mb-2"><i class="las la-key"></i> <span class="unique-key">{{ item.unique_key }}</span></h6> -->
               <!-- <h6 class="card-subtitle mb-2 text-muted">Key: {{ item.unique_key }}</h6> -->
-              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> {{ item.created_at }}</h6>
+              <!-- <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> {{ item.created_at }}</h6> -->
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> <span class="badge badge-light">{{ key[1] }}</span></h6>
               <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i> Tasks: {{ item.tasks | length }}</h6>
               <hr class="dm-background"/>
               <p>

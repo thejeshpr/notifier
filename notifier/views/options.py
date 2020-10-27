@@ -19,3 +19,7 @@ class SyncTypeSet(str, Enum):
     ys = "ys"
     hn = "hn"
     dzone = "dzone"
+    bkdko = "bkdko"
+    crdko = "crdko"
+    bkdko_road_test = "bkdko_road_test"
+    crdko_road_test = "crdko_road_test"

@@ -19,6 +19,8 @@ from notifier.grabbers.weather import Weather
 from notifier.grabbers.yourstry import YS
 from notifier.grabbers.hn import HN
 from notifier.grabbers.dzone import Dzone
+from notifier.grabbers.bkdko import BKdko
+from notifier.grabbers.crdko import Crdko
 
 SYNC_GRABBERS = {    
     "pricetracker": PriceTrackerSync.sync,
@@ -33,6 +35,10 @@ SYNC_GRABBERS = {
     "ys": YS.sync,
     "hn": HN.sync,
     "dzone": Dzone.sync,
+    "bkdko": BKdko.sync,
+    "crdko": Crdko.sync,
+    "bkdko_road_test": BKdko.bkdko_road_test,
+    "crdko_road_test": Crdko.crdko_road_test,
 }
 
 

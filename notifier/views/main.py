@@ -1,12 +1,10 @@
 from notifier import app, templates
 from fastapi import Request, Depends, Query
 from fastapi.responses import ORJSONResponse, HTMLResponse
-# from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from notifier.views.users import User, fastapi_users
 
 from notifier.views import get_db
-# from notifier.grabbers.base import Notify
 from notifier.db import models
 
 
@@ -49,7 +47,7 @@ async def sync_type(
                     .order_by(models.Task.id.desc())\
                         .limit(25).all()    
 
-    return templates.TemplateResponse("sync_type.html", {"sync_type": st, "jobs": jobs, "tasks": tasks, "request": request})
+    return templates.TemplateResponse("sync_type.html", {"sync_type": st, "jobs": jobs, "tasks": tasks, "request": request, "current_page": "Sync Type"})
 
 
 @app.get("/task/latest", response_class=HTMLResponse)
@@ -65,7 +63,7 @@ async def latest_tasks(
                     .offset( limit * page )\
                         .limit(limit)\
                             .all()
-    return templates.TemplateResponse("tasks.html", {"items": items, "request": request, "page": page})
+    return templates.TemplateResponse("tasks.html", {"items": items, "request": request, "page": page, "current_page": "Tasks"})
 
 
 @app.get("/job/latest", response_class=HTMLResponse)
@@ -82,7 +80,7 @@ async def latest_jobs(
                     .offset( limit * page )\
                         .limit(limit)\
                             .all()
-    return templates.TemplateResponse("jobs.html", {"items": items, "request": request, "page": page})
+    return templates.TemplateResponse("jobs.html", {"items": items, "request": request, "page": page, "current_page": "Jobs"})
 
 
 @app.get("/job/{id}", response_class=HTMLResponse)
@@ -97,4 +95,4 @@ async def job(
                 .filter(models.Task.job == job)\
                     .order_by(models.Task.id.desc())\
                         .limit(25).all()
-    return templates.TemplateResponse("job.html", {"job": job, "tasks": tasks, "request": request})
+    return templates.TemplateResponse("job.html", {"job": job, "tasks": tasks, "request": request, "current_page": "Job"})
