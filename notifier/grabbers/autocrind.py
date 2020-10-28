@@ -5,9 +5,7 @@ from notifier.grabbers.base import Base, Internet
 class Autocrind(object):    
 
     @staticmethod
-    def sync(obj: Base, *args, **kwargs):  
-        # base : https://www.autocarindia.com/car-news
-        # post_url:       
+    def sync(obj: Base, *args, **kwargs):        
         soup = Internet.get_soup_phjs(obj.sync_type.base_url)
         divs = soup.find_all('div', {'class':'blog row'})
 
