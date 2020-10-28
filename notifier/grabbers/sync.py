@@ -21,6 +21,8 @@ from notifier.grabbers.hn import HN
 from notifier.grabbers.dzone import Dzone
 from notifier.grabbers.bkdko import BKdko
 from notifier.grabbers.crdko import Crdko
+from notifier.grabbers.autocrind import Autocrind
+from notifier.grabbers.crwle import Crwle
 
 SYNC_GRABBERS = {    
     "pricetracker": PriceTrackerSync.sync,
@@ -39,6 +41,8 @@ SYNC_GRABBERS = {
     "crdko": Crdko.sync,
     "bkdko_road_test": BKdko.bkdko_road_test,
     "crdko_road_test": Crdko.crdko_road_test,
+    "autocrind": Autocrind.sync,
+    "crwle": Crwle.sync,
 }
 
 
