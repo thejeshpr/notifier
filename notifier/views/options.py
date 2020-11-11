@@ -31,3 +31,4 @@ class SyncTypeSet(str, Enum):
     infit_inhealth = "infit_inhealth"
     psily = "psily"
     bpanda = "bpanda"
+    fml = "fml"
