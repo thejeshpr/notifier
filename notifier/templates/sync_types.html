@@ -20,7 +20,10 @@
                </h5>              
               <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar-alt"></i> Timestamp: {{ item.created_at }}</h6>
               <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i> Jobs: {{ item.jobs | length }}</h6>
-              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i> Tasks: {{ item.tasks | length }}</h6>
+              <h6 class="card-subtitle mb-2 text-muted">
+                 <i class="las la-tasks"></i> Tasks: {{ item.tasks | length }}
+                 <secondary><a href="{{ request.url_for('sync_type_tasks', id=item.id) }}">View all</a></secondary>
+               </h6>
               <hr class="dm-background"/>
               <p>
                  <code class="loop-code">
@@ -31,9 +34,7 @@
                     <strong><i class="las la-anchor"></i> Base URL:</strong> {{ item.base_url }}<br/>
                     <strong><i class="las la-list"></i> Extras:</strong> {{ item.extras }}
                  </code>
-              </p>
-              <!-- <a href="#" class="card-link">Card link</a>
-              <a href="#" class="card-link">Another link</a> -->
+              </p>              
            </div>
         </div>
         <br/>

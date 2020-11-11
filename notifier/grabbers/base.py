@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import os
 import time
@@ -9,6 +10,7 @@ from requests_html import HTMLSession
 
 import requests
 from bs4 import BeautifulSoup
+import pytz
 import telegram
 from fastapi.responses import ORJSONResponse
 
@@ -125,7 +127,8 @@ class Base(object):
         for task in self.tasks:
             # check if task not found add it
             if not self.is_task_found(task.unique_key):
-                try:                    
+                try:
+                    task.data["timestamp"] = self.get_current_time()
                     self.db.add(
                         models.Task(
                             unique_key=task.unique_key,
@@ -144,7 +147,15 @@ class Base(object):
                     self.db.rollback()
                     raise e
 
-        self.db.refresh(self.job)        
+        self.db.refresh(self.job)  
+
+    def get_current_time(self):
+        fmt = "%H:%M-%D"
+        utcmoment_naive = datetime.utcnow()        
+        utcmoment = utcmoment_naive.replace(tzinfo=pytz.utc)
+        tz = os.environ.get("TZ")
+        conv_dt = utcmoment.astimezone(pytz.timezone(tz))
+        return conv_dt.strftime(fmt)
         
 
     def add_task(self, task: schema.TaskIn):

@@ -20,7 +20,7 @@
                             <span class="badge badge-pill badge-dark"><i class="las la-running"></i> OooOooO</span>
                             {% endif %}
                         </div>
-                        <!-- <h5 class="card-title"><i class="las la-business-time"></i> #{{ job.id }}: <span class="text-muted">{{ job.sync_type.name }} ({{ job.extras.url_query }})</span></h5> -->
+                        
                         <h5 class="card-title">
                             <span class="licon">
                                <i class="las la-business-time"></i> #{{ job.id }}: 
@@ -31,9 +31,7 @@
                                 <span class="badge badge-light">{{ key[1] }}</span>
                                 <span class="unique-key">{{ key[2] }}</span>
                              </span>                            
-                          </h5>
-                        <!-- <h6 class="card-subtitle mb-2 text-muted"><i class="las la-key"></i> Key: {{ job.unique_key }}</h6> -->
-                        <!-- <h6 class="card-subtitle mb-2"><i class="las la-key"></i> Key: <span class="unique-key">{{ job.unique_key }}</span></h6> -->
+                          </h5>                       
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ job.created_at }}</h6>
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i>  Tasks: {{ job.tasks | length }}</h6>
                         <hr class="dm-background"/>
@@ -44,9 +42,7 @@
                                 <strong><i class="las la-link"></i> URL Query:</strong> {{ job.extras.url_query }}<br/>
                                 <strong>Error:</strong> {{ job.err }}
                     </code>
-                        </p>
-                        <!-- <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a> -->
+                        </p>                        
                     </div>
                 </div>                
             </div>
@@ -61,8 +57,7 @@
             <div class="col col-12">
 
                 <div class="card dark-mode">
-                    <div class="card-body">
-                        <!-- <h5 class="card-title"><i class="las la-tasks"></i> # {{ item.id }} : <span class="text-muted">{{ item.name }}</span></h5> -->
+                    <div class="card-body">                        
                         <h5 class="card-title">
                             <span class="licon">
                                 <i class="las la-file"></i> # {{ item.id }} :
@@ -70,27 +65,22 @@
                              <a href="{{ item.url }}" target="_blank">
                                 <span class="text-muted ltitle">{{ item.name }}</span>
                              </a>               
-                        </h5>
-                        <!-- <h6 class="card-subtitle mb-2"><i class="las la-key"></i> Key: <span class="unique-key">{{ item.unique_key }}</span></h6> -->
+                        </h5>                        
                         <h6 class="card-subtitle mb-2">
                             <span class="licon"><i class="las la-key"></i> Key:</span> 
                             <span class="unique-key">{{ item.unique_key }}</span>
                         </h6>
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-sync"></i> Type: {{ item.sync_type.name }}</h6>                        
-                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ item.created_at }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: <span class="badge badge-light">{{ item.data.get("timestamp") or item.created_at }}</span></h6>
                         <hr class="dm-background"/>
                         <p>
-                            <code class="loop-code">
-                            <!-- <strong><i class="las la-link"></i> URL:</strong> <a href="{{ item.url }}" target="_blank">{{ item.url }}</a><br/>                       -->
+                            <code class="loop-code">                            
                             {% for key in item.data %}                        
                             <strong><i class="las la-feather-alt"></i> {{ key }}</strong>: {{ item.data.get(key) }}
                             <br/>                        
                             {% endfor %}
                     </code>
-                        </p>
-
-                        <!-- <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a> -->
+                        </p>                        
                     </div>
                 </div>
                 <br/>

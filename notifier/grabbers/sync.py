@@ -26,6 +26,9 @@ from notifier.grabbers.crwle import Crwle
 from notifier.grabbers.twrdsdtsc import Twrdsdtsc
 from notifier.grabbers.deepst import DeepSt
 from notifier.grabbers.better_advice import BetterAdvice
+from notifier.grabbers.in_fit_in_health import InFitInHealth
+from notifier.grabbers.psily import PSily
+# from notifier.grabbers.knowledge_stew import KnowledgeStew
 
 SYNC_GRABBERS = {    
     "pricetracker": PriceTrackerSync.sync,
@@ -49,6 +52,9 @@ SYNC_GRABBERS = {
     "twrdsdtsc": Twrdsdtsc.sync,
     "deepst": DeepSt.sync,
     "better_advice": BetterAdvice.sync,
+    "infit_inhealth": InFitInHealth.sync,
+    "psily": PSily.sync,    
+
 }
 
 

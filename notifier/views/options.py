@@ -28,3 +28,5 @@ class SyncTypeSet(str, Enum):
     twrdsdtsc = "twrdsdtsc"
     deepst = "deepst"
     better_advice = "better_advice"
+    infit_inhealth = "infit_inhealth"
+    psily = "psily"

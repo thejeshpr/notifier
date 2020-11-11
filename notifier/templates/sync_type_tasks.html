@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %} ST:{{ sync_type.name }} | Loopholes {% endblock %}
+
+{% block content %}
+    <div>
+        <div class="row">
+            <div class="col col-12">
+
+                <div class="card dark-mode">
+                    <div class="card-body">                        
+                        <h5 class="card-title">
+                            <span class="licon">
+                               <i class="las la-sync"></i> #{{ sync_type.id }}: 
+                            </span>
+                            <a href="{{ request.url_for('sync_type', id=sync_type.id) }}">
+                               <span class="text-muted ltitle">{{ sync_type.name }}</span>
+                            </a>
+                         </h5>              
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ sync_type.created_at }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i>  Jobs: {{ sync_type.jobs | length }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i>  Tasks: {{ sync_type.tasks | length }}</h6>
+                        <hr class="dm-background"/>
+                        <p>
+                            <code class="loop-code">                                                  
+                                <strong><i class="las la-toggle-off"></i> Enabled:</strong> {{ sync_type.enabled }}<br/>
+                                <strong><i class="las la-lock"></i> Is Locked:</strong> {{ sync_type.locked }}<br/>
+                                <strong><i class="las la-paper-plane"></i> Dispatch To:</strong> {{ sync_type.dispatch_to }}<br/>
+                                <strong><i class="las la-bell"></i> Dispatch Notification:</strong> {{ sync_type.dispatch_notification }}<br/>
+                                <strong><i class="las la-anchor"></i> Base URL:</strong> {{ sync_type.base_url }}<br/>
+                                <strong><i class="las la-list"></i> Extras:</strong> {{ sync_type.extras }}
+                            </code>
+                        </p>
+                    </div>
+                </div>                
+
+            </div>
+        </div>
+    </div>
+
+    <hr class="dark-mode"/>
+
+    <div>
+        {% for item in tasks %}
+        <div class="row">
+            <div class="col col-12">
+
+                <div class="card dark-mode">
+                    <div class="card-body">                        
+                        <h5 class="card-title">
+                            <span class="licon">
+                                <i class="las la-file"></i> # {{ item.id }} :
+                             </span> 
+                             <a href="{{ item.url }}" target="_blank">
+                                <span class="text-muted ltitle">{{ item.name }}</span>
+                             </a>               
+                        </h5>                        
+                        <h6 class="card-subtitle mb-2">
+                            <span class="licon"><i class="las la-key"></i> Key:</span> 
+                            <span class="unique-key">{{ item.unique_key }}</span>
+                        </h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: <span class="badge badge-light">{{ item.data.get("timestamp") or item.created_at }}</span></h6>
+                        <hr class="dm-background"/>
+                        <p>
+                            <code class="loop-code">                            
+                            {% for key in item.data %}                        
+                                <strong><i class="las la-feather-alt"></i> {{ key }}</strong>: {{ item.data.get(key) }}
+                            <br/>                        
+                            {% endfor %}
+                            </code>
+                        </p>
+
+                    </div>
+                </div>
+                <br/>
+
+            </div>
+        </div>        
+
+        {% else %}
+        <div class="d-flex justify-content-center licon">
+            <h1>No Tasks found <i class="las la-frown"></i></h1>    
+        </div>
+        {% endfor %}
+
+        <nav aria-label="Page navigation">    
+            <ul class="pagination pagination-lg justify-content-center">
+            {% if page - 1 > 0 %}
+              <li class="page-item"><a class="page-link dark-mode" style="color: cornsilk;" href="{{ request.url_for('sync_type_tasks', id=sync_type.id) }}?page={{page - 1}}">Prev</a></li>
+            {% else %}
+              <li class="page-item"><a class="page-link dark-mode" style="color: cornsilk;" href="{{ request.url_for('sync_type_tasks', id=sync_type.id) }}">Prev</a></li>
+            {% endif %}              
+              <li class="page-item"><a class="page-link dark-mode" style="color: cornsilk;" href="{{ request.url_for('sync_type_tasks', id=sync_type.id) }}?page={{page + 1}}">Next</a></li>
+            </ul>
+        </nav>
+
+    </div>
+{% endblock %}

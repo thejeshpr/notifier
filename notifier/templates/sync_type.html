@@ -8,8 +8,7 @@
             <div class="col col-12">
 
                 <div class="card dark-mode">
-                    <div class="card-body">                        
-                        <!-- <h5 class="card-title"><i class="las la-sync"></i> # {{ sync_type.id }}: <span class="text-muted">{{ sync_type.name }}</span></h5>                         -->
+                    <div class="card-body">
                         <h5 class="card-title">
                             <span class="licon">
                                <i class="las la-sync"></i> #{{ sync_type.id }}: 
@@ -20,7 +19,10 @@
                          </h5>              
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ sync_type.created_at }}</h6>
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i>  Jobs: {{ sync_type.jobs | length }}</h6>
-                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i>  Tasks: {{ sync_type.tasks | length }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <i class="las la-tasks"></i>  Tasks: {{ sync_type.tasks | length }}
+                            <secondary><a href="{{ request.url_for('sync_type_tasks', id=sync_type.id) }}">View all</a></secondary>
+                        </h6>
                         <hr class="dm-background"/>
                         <p>
                             <code class="loop-code">                                                  
@@ -104,8 +106,7 @@
             <div class="col col-12">
 
                 <div class="card dark-mode">
-                    <div class="card-body">
-                        <!-- <h5 class="card-title"><i class="las la-tasks"></i> # {{ item.id }} : <span class="text-muted">{{ item.name }}</span></h5>                         -->
+                    <div class="card-body">                        
                         <h5 class="card-title">
                             <span class="licon">
                                 <i class="las la-file"></i> # {{ item.id }} :
@@ -113,13 +114,12 @@
                              <a href="{{ item.url }}" target="_blank">
                                 <span class="text-muted ltitle">{{ item.name }}</span>
                              </a>               
-                        </h5>
-                        <!-- <h6 class="card-subtitle mb-2 text-muted"><i class="las la-key"></i> Key: {{ item.unique_key }}</h6> -->
+                        </h5>                        
                         <h6 class="card-subtitle mb-2">
                             <span class="licon"><i class="las la-key"></i> Key:</span> 
                             <span class="unique-key">{{ item.unique_key }}</span>
                         </h6>
-                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ item.created_at }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: <span class="badge badge-light">{{ item.data.get("timestamp") or item.created_at }}</span></h6>
                         <hr class="dm-background"/>
                         <p>
                             <code class="loop-code">                            
