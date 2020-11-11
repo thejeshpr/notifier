@@ -5,9 +5,7 @@ from notifier.grabbers.base import Base, Internet
 class Crwle(object):    
 
     @staticmethod
-    def sync(obj: Base, *args, **kwargs):  
-        # base : https://www.carwale.com/news/
-        # post_url:       
+    def sync(obj: Base, *args, **kwargs):            
         soup = Internet.get_soup_phjs(obj.sync_type.base_url)
         links = soup.find_all('a', {'class':'o-eZTujG o-fyWCgU'})
 

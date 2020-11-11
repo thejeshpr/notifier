@@ -5,7 +5,9 @@ from sqlalchemy import Column, Integer, String, Text, JSON, ForeignKey, Boolean,
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from notifier.db import Base
+from sqlalchemy.ext.declarative import declarative_base
+
+
 import sqlalchemy as sa
 from datetime import datetime
 
@@ -13,10 +15,13 @@ from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
 
 import pytz
 
+
+Base = declarative_base()
+
 def get_current_time():
     utcmoment_naive = datetime.utcnow()
     utcmoment = utcmoment_naive.replace(tzinfo=pytz.utc)
-    tz = os.environ.get("TZ")
+    tz = os.environ.get("TZ", "Asia/kolkata")
     return utcmoment.astimezone(pytz.timezone(tz))
 
 
@@ -56,7 +61,7 @@ class Job(Base):
     sync_type       = relationship("SyncType", back_populates="jobs")
     sync_type_id    = Column(Integer, ForeignKey('sync_type.id'))
     tasks           = relationship('Task', back_populates="job")
-    unique_key      = Column(String, unique=True, index=True)
+    unique_key      = Column(String, unique=True, index=True)    
 
 
 class Task(Base):
@@ -75,7 +80,7 @@ class Task(Base):
     sync_type_id  = Column(Integer, ForeignKey('sync_type.id'))
     task_type     = Column(String, nullable=True)
     unique_key    = Column(Text, unique=True, index=True)
-    url           = Column(Text, nullable=True)
+    url           = Column(Text, nullable=True)    
 
 
 class PriceTracker(Base):

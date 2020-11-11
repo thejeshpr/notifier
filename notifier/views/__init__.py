@@ -1,7 +1,7 @@
-from notifier.db import SessionLocal, engine, Base
+from notifier.db import SessionLocal, engine, models
 
-# Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
+# models.Base.metadata.drop_all(bind=engine)
+# models.Base.metadata.create_all(bind=engine)
 
 
 def get_db():

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}SyncTypes | Filter Tasks {% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col col-12">
+
+        <div class="card dark-mode">
+            <div class="card-body">                                        
+                <h5 class="card-title">
+                    <span class="licon">
+                       <i class="las la-sync"></i> Filter Tasks: 
+                    </span>                    
+                 </h5>              
+                 <hr class="dm-background"/>
+                 
+                 <table class="table table-dark table-responsive">
+                    <thead>
+                      <tr class="ltitle" style="color: white;">                        
+                        <th scope="col"><i class="las la-key"></i> Query Path</th>                          
+                        <th scope="col"><i class="las la-tasks"></i> Tasks</th>                                                     
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for name, val in filter_params.items() %}
+                        <tr>
+                            <th scope="row"><a href="#" class="licon">{{ name }}</a></th>
+                            <td>10</td>                            
+                          </tr>
+                        {% endfor %}                                                            
+                    </tbody>
+                </table>
+
+            </div>
+        </div>                
+
+    </div>
+</div>
+
+
+
+<div>
+    
+</div>
+
+{% endblock %}

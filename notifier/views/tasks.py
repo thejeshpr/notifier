@@ -2,7 +2,7 @@ import os
 
 from notifier.db import SessionLocal
 from notifier import app
-from notifier.db import Base, engine
+# from notifier.db import Base, engine
 from notifier.routers import price_tracker_router, sync_type_router, task_router
 
 from notifier.db import models
