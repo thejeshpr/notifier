@@ -5,6 +5,7 @@ import traceback
 from typing import Optional, Dict, List, Any
 from pprint import pprint
 from fastapi import Request
+from requests_html import HTMLSession
 
 import requests
 from bs4 import BeautifulSoup
@@ -392,6 +393,18 @@ class Internet(object):
         res = requests.post(url, params=params, headers=headers, data=data)
         Internet.check_status_code(res)
         return res.content if not return_json else res.json()
+
+    @staticmethod
+    def html_get(
+        url: str,            
+        params: Dict[str, str] = {},
+        headers: Dict[str, str] = None        
+    ):
+        """
+        establish http request
+        """
+        session = HTMLSession()
+        return session.get(url)        
 
 
 class Notify(object):

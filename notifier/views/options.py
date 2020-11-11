@@ -25,3 +25,6 @@ class SyncTypeSet(str, Enum):
     crdko_road_test = "crdko_road_test"
     autocrind = "autocrind"
     crwle = "crwle"
+    twrdsdtsc = "twrdsdtsc"
+    deepst = "deepst"
+    better_advice = "better_advice"

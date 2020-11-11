@@ -96,3 +96,118 @@ async def job(
                     .order_by(models.Task.id.desc())\
                         .limit(25).all()
     return templates.TemplateResponse("job.html", {"job": job, "tasks": tasks, "request": request, "current_page": "Job"})
+
+
+@app.get("/filter/tasks", response_class=HTMLResponse)
+def filter_render(
+    request: Request,
+    db: Session = Depends(get_db),
+    user: User = Depends(fastapi_users.get_current_user)
+):    
+
+    filter_params = {
+
+        # ng
+        "ng:{nfw:hot}": "ng:group=nsfw,type=hot",
+        "ng:{awesome:hot}": "ng:group=awesome,type=hot",        
+        "ng:{girl:hot}": "ng:group=girl,type=hot",
+        "ng:{girlcelebrity:hot}": "ng:group=girlcelebrity,type=hot",
+        "ng:{relationship:hot}": "ng:group=relationship,type=hot",
+
+        # news
+        "news": "news",
+        "news:{US}": "news:key=country,val=us",
+
+        # weather
+        "weather": "weather",
+        "weather:{Bangalore}": "weather:city=bangalore",
+
+        # D2
+        "d2": "d2",
+
+        # YS
+        "ys:{techsparks}": "ys:category=techsparks",
+        "ys:{Inspiration}": "ys:category=Inspiration",
+        "ys:{Opinion}": "ys:category=Opinion",
+        "ys:{Interview}": "ys:category=Interview",
+        "ys:{startup}": "ys:category=startup",
+        
+        # hn
+        "hn:{artificial-intelligence}": "hn:tag=artificial-intelligence",
+        "hn:{coding}": "hn:tag=coding",
+        "hn:{python}": "hn:tag=python",
+        "hn:{devops}": "hn:tag=devops",
+        "hn:{security}": "hn:tag=security",
+        "hn:{gaming}": "hn:tag=gaming",
+        "hn:{technology}": "hn:tag=technology",
+        "hn:{self-improvement}": "hn:tag=self-improvement",
+        "hn:{startups}": "hn:tag=startups",
+        "hn:{programming}": "hn:tag=programming",
+
+        # bfy
+        "bfy": "bfy",
+
+        # realpython
+        "realpython": "realpython",
+
+        # dzone
+        "dzone": "dzone",
+
+        # bkdko
+        "bkdko": "bkdko",
+
+        # crdko
+        "crdko": "crdko",
+
+        # crdko_road_test
+        "crdko_road_test": "crdko_road_test",
+
+        # bkdko_road_test
+        "bkdko_road_test": "bkdko_road_test",
+
+        # autocrind
+        "autocrind": "autocrind",
+
+        # crwle
+        "crwle": "crwle",
+    }
+
+    return templates.TemplateResponse(
+        "task-filter.html",
+        {
+            "filter_params": filter_params,
+            "request": request,
+            "current_page": "filters-task"
+        }
+    )
+
+
+def parse_params(param: str) -> dict:
+    if ":" in param:
+        params = param.split(":")
+        sync_type, qp = params[0], params[1]
+    else:
+        sync_type, qp = param, None
+    
+    return {
+        "sync_type": sync_type,
+        "qp": qp
+    }
+
+
+# def get_tasks_count(param: str):
+#     params = parse_params(param)
+#     sync_type = db.query(models.SyncType)\
+#                     .filter(models.SyncType.name == param["sync_type"])\                        
+#                         .first()
+#     tasks = db.query(models.Task)\
+#                 .join(models.SyncType, models.SyncType == sync_type)\
+#                     .join(models.Job, models.Job. == sync_type)
+
+# app.get("/filter/{params}", response_class=HTMLResponse)
+# def parse_filter(
+#     request: Request,
+#     db: Session = Depends(get_db),
+#     user: User = Depends(fastapi_users.get_current_user)
+# ):
+#     # pass

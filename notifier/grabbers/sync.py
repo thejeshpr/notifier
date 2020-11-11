@@ -23,6 +23,9 @@ from notifier.grabbers.bkdko import BKdko
 from notifier.grabbers.crdko import Crdko
 from notifier.grabbers.autocrind import Autocrind
 from notifier.grabbers.crwle import Crwle
+from notifier.grabbers.twrdsdtsc import Twrdsdtsc
+from notifier.grabbers.deepst import DeepSt
+from notifier.grabbers.better_advice import BetterAdvice
 
 SYNC_GRABBERS = {    
     "pricetracker": PriceTrackerSync.sync,
@@ -43,6 +46,9 @@ SYNC_GRABBERS = {
     "crdko_road_test": Crdko.crdko_road_test,
     "autocrind": Autocrind.sync,
     "crwle": Crwle.sync,
+    "twrdsdtsc": Twrdsdtsc.sync,
+    "deepst": DeepSt.sync,
+    "better_advice": BetterAdvice.sync,
 }
 
 
