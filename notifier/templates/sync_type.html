@@ -114,21 +114,29 @@
                              <a href="{{ item.url }}" target="_blank">
                                 <span class="text-muted ltitle">{{ item.name }}</span>
                              </a>               
-                        </h5>                        
+                        </h5>
+                        <h6 class="card-subtitle mb-2 licon"><i class="las la-code"></i> Args: <code>{{ item.job.extras.url_query or "default" }}</code></span></h6>
                         <h6 class="card-subtitle mb-2">
                             <span class="licon"><i class="las la-key"></i> Key:</span> 
                             <span class="unique-key">{{ item.unique_key }}</span>
                         </h6>
-                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: <span class="badge badge-light">{{ item.data.get("timestamp") or item.created_at }}</span></h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: <span class="badge badge-light">{{ item.data.get("timestamp") or item.created_at }}</span></h6>                        
+                        
                         <hr class="dm-background"/>
-                        <p>
-                            <code class="loop-code">                            
-                            {% for key in item.data %}                        
-                                <strong><i class="las la-feather-alt"></i> {{ key }}</strong>: {{ item.data.get(key) }}
-                            <br/>                        
-                            {% endfor %}
-                            </code>
-                        </p>
+                        <a class="float-right" data-toggle="collapse" href="#collapseExample-{{ loop.index }}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            <h2 style="color: darkgray;"><i class="las la-plus-square"></i></h2>
+                          </a>
+                                    
+                          <div class="collapse" id="collapseExample-{{ loop.index }}">
+                             <div class="card dark-mode">
+                                <code class="loop-code">                 
+                                   {% for key in item.data %}                        
+                                   <strong><i class="las la-feather-alt"></i> {{ key }}</strong>: {{ item.data.get(key) }}
+                                   <br/>                        
+                                   {% endfor %}
+                                </code>
+                             </div>
+                          </div>
 
                     </div>
                 </div>
