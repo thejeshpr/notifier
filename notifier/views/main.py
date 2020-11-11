@@ -50,6 +50,29 @@ async def sync_type(
     return templates.TemplateResponse("sync_type.html", {"sync_type": st, "jobs": jobs, "tasks": tasks, "request": request, "current_page": "Sync Type"})
 
 
+@app.get("/sync-type/{id}/tasks", response_class=HTMLResponse)
+async def sync_type_tasks(
+    request: Request,
+    id: int,
+    page: int = Query(0),
+    limit: int = Query(default=25, le=25),    
+    db: Session = Depends(get_db),
+    user: User = Depends(fastapi_users.get_current_user)
+):     
+    st = db.query(models.SyncType).filter(models.SyncType.id == id).first()
+    tasks = db.query(models.Task).filter(models.Task.sync_type == st).order_by(models.Task.id.desc()).offset( limit * page ).limit(25).all()
+
+    context = {
+        "sync_type": st,        
+        "tasks": tasks,
+        "request": request,
+        "current_page":"Sync Type Tasks",
+        "page": page,
+    }
+
+    return templates.TemplateResponse("sync_type_tasks.html", context)
+
+
 @app.get("/task/latest", response_class=HTMLResponse)
 async def latest_tasks(
     request: Request,
