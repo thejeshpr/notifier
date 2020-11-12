@@ -18,9 +18,9 @@
                             </a>
                          </h5>              
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ sync_type.created_at }}</h6>
-                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i>  Jobs: {{ sync_type.jobs | length }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i>  Jobs: {{ job_count }}</h6>
                         <h6 class="card-subtitle mb-2 text-muted">
-                            <i class="las la-tasks"></i>  Tasks: {{ sync_type.tasks | length }}
+                            <i class="las la-tasks"></i>  Tasks: {{ task_count }}
                             <secondary><a href="{{ request.url_for('sync_type_tasks', id=sync_type.id) }}">View all</a></secondary>
                         </h6>
                         <hr class="dm-background"/>
@@ -56,21 +56,20 @@
                                 <th scope="col">#</th>                                
                                 <th scope="col"><i class="las la-key"></i> Key</th>  
                                 <th scope="col"><i class="las la-question-circle"></i> Status</th>                                
-                                <th scope="col"><i class="las la-tasks"></i> Tasks</th>
-                                <!-- <th scope="col"><i class="las la-calendar"></i> Timestamp</th> -->                                
+                                <th scope="col"><i class="las la-tasks"></i> Tasks</th>                                
                                 <th scope="col"><i class="las la-code"></i> Args</th>                                                                               
                               </tr>
                             </thead>
                             <tbody>
-                                {% for job in jobs %}
+                                {% for item in jobs %}
+                                {% set job = item[0] %}
+                                {% set job_task_count = item[1] %}
                                 <tr>
                                     <th scope="row"><a href="{{ request.url_for('job', id=job.id) }}" class="licon">{{ job.id }}</a></th>
                                     <td>
                                         <a href="{{ request.url_for('job', id=job.id) }}" class="job-unique-key">
-                                            {% set key = job.unique_key.split(':') %}                     
-                                            <!-- <span class="ltitle">{{ key[0] }}</span> -->
-                                            <span class="badge badge-light">{{ key[1] }}</span>
-                                            <!-- <span class="text-muted">{{ key[2] }}</span> -->
+                                            {% set key = job.unique_key.split(':') %}                                                                 
+                                            <span class="badge badge-light">{{ key[1] }}</span>                                            
                                         </a>
                                     </td>                                                                
                                     <td>
@@ -84,8 +83,7 @@
                                         <span class="badge badge-pill badge-dark"><i class="las la-running"></i> OooOooO</span>
                                         {% endif %}
                                     </td>
-                                    <td class="licon">{{ job.tasks | length }}</td>
-                                    <!-- <td>{{ job.created_at }}</td> -->                                    
+                                    <td class="licon">{{ job_task_count }}</td>                                    
                                     <td><code>{{ job.extras.url_query }}</code></td>   
                                   </tr>
                                 {% endfor %}                                                            
