@@ -10,8 +10,9 @@ class PSily(object):
         r = Internet.html_get(obj.sync_type.base_url)
         links = r.html.xpath('/html/body/div[*]/div[*]/div/div[*]/div[*]/section/div[*]/div[*]/div[*]/a')                                      
 
-        for a in links[::-1]:            
-            url = urllib.parse.urljoin(obj.sync_type.base_url, a.attrs.get('href'))
+        for a in links[::-1]:
+            path = a.attrs.get('href').split("?")[0]
+            url = urllib.parse.urljoin(obj.sync_type.base_url, path)
             name = a.text.strip()            
 
             obj.add_text_task(

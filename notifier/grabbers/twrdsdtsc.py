@@ -11,8 +11,9 @@ class Twrdsdtsc(object):
         links = r.html.xpath('/html/body/div/div/div[3]/div/div[2]/div/div[*]/div/div/div/div[1]/div[2]/div/section/div/h1/a')
         
         for a in links[::-1]:            
-            url = urllib.parse.urljoin(obj.sync_type.base_url, a.attrs.get('href'))
-            name = a.text.strip()            
+            path = a.attrs.get('href').split("?")[0]
+            url = urllib.parse.urljoin(obj.sync_type.base_url, path)
+            name = a.text.strip()
 
             obj.add_text_task(
                 unique_key=url,
