@@ -4,6 +4,8 @@ from fastapi.responses import ORJSONResponse, HTMLResponse
 from sqlalchemy.orm import Session
 from notifier.views.users import User, fastapi_users
 
+from sqlalchemy import func
+
 from notifier.views import get_db
 from notifier.db import models
 
@@ -26,7 +28,23 @@ async def index(
     user: User = Depends(fastapi_users.get_current_user)
 ):
     sync_types = db.query(models.SyncType).order_by(models.SyncType.id.desc()).all() 
-    return templates.TemplateResponse("sync_types.html", {"items": sync_types, "request": request})
+    # res = db.query(models.SyncType, func.count(models.Task.id)).outerjoin(models.Task).group_by(models.SyncType.id).all()    
+    task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
+            .group_by(models.Task.sync_type_id).subquery()
+    job_sq = db.query(models.Job.sync_type_id, func.count(models.Job.sync_type_id).label('count'))\
+            .group_by(models.Job.sync_type_id).subquery()
+
+    res = db.query(models.SyncType, job_sq.c.count, task_sq.c.count)\
+                .join( 
+                        (job_sq, job_sq.c.sync_type_id == models.SyncType.id),
+                        (task_sq, task_sq.c.sync_type_id == models.SyncType.id)
+                    )\
+                    .all()    
+    context = {
+        "items": res,
+        "request": request
+    }
+    return templates.TemplateResponse("sync_types.html", context)
 
 
 @app.get("/sync-type/{id}", response_class=HTMLResponse)
