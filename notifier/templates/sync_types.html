@@ -6,23 +6,26 @@
 {% block content %}
 <div class="">
   {% for item in items %}
+  {% set sync_type = item[0] %}
+  {% set job_count = item[1] %}
+  {% set task_count = item[2] %}
   <div class="row">
      <div class="col col-12">
         <div class="card dark-mode">
            <div class="card-body">              
               <h5 class="card-title">
                   <span class="licon">
-                     <i class="las la-sync"></i> #{{ item.id }}: 
+                     <i class="las la-sync"></i> #{{ sync_type.id }}: 
                   </span>
-                  <a href="{{ request.url_for('sync_type', id=item.id) }}">
-                     <span class="text-muted ltitle">{{ item.name }}</span>
+                  <a href="{{ request.url_for('sync_type', id=sync_type.id) }}">
+                     <span class="text-muted ltitle">{{ sync_type.name }}</span>
                   </a>
                </h5>              
-              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar-alt"></i> Timestamp: {{ item.created_at }}</h6>
-              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i> Jobs: {{ item.jobs | length }}</h6>
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar-alt"></i> Timestamp: {{ sync_type.created_at }}</h6>
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i> Jobs: {{ job_count }}</h6>
               <h6 class="card-subtitle mb-2 text-muted">
-                 <i class="las la-tasks"></i> Tasks: {{ item.tasks | length }}
-                 <secondary><a href="{{ request.url_for('sync_type_tasks', id=item.id) }}">View all</a></secondary>
+                 <i class="las la-tasks"></i> Tasks: {{ task_count }}
+                 <secondary><a href="{{ request.url_for('sync_type_tasks', id=sync_type.id) }}">View all</a></secondary>
                </h6>
               <hr class="dm-background"/>
 
@@ -33,12 +36,12 @@
                <div class="collapse" id="collapseExample-{{ loop.index }}">
                   <div class="card dark-mode">
                      <code class="loop-code">                 
-                        <strong><i class="las la-toggle-off"></i> Enabled:</strong> {{ item.enabled }}<br/>
-                        <strong><i class="las la-lock"></i> Is Locked:</strong> {{ item.locked }}<br/>
-                        <strong><i class="las la-paper-plane"></i> Dispatch To:</strong> {{ item.dispatch_to }}<br/>
-                        <strong><i class="las la-bell"></i> Dispatch Notification:</strong> {{ item.dispatch_notification }}<br/>
-                        <strong><i class="las la-anchor"></i> Base URL:</strong> {{ item.base_url }}<br/>
-                        <strong><i class="las la-list"></i> Extras:</strong> {{ item.extras }}
+                        <strong><i class="las la-toggle-off"></i> Enabled:</strong> {{ sync_type.enabled }}<br/>
+                        <strong><i class="las la-lock"></i> Is Locked:</strong> {{ sync_type.locked }}<br/>
+                        <strong><i class="las la-paper-plane"></i> Dispatch To:</strong> {{ sync_type.dispatch_to }}<br/>
+                        <strong><i class="las la-bell"></i> Dispatch Notification:</strong> {{ sync_type.dispatch_notification }}<br/>
+                        <strong><i class="las la-anchor"></i> Base URL:</strong> {{ sync_type.base_url }}<br/>
+                        <strong><i class="las la-list"></i> Extras:</strong> {{ sync_type.extras }}
                      </code>
                   </div>
                </div>                            
