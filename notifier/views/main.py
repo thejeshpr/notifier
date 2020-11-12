@@ -187,13 +187,25 @@ async def job(
     id: int,
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
-):     
-    job = db.query(models.Job).filter(models.Job.id == id).first()
+):    
+
+    job_res = db.query(models.Job, func.count(models.Task.id)).filter(models.Job.id == id).\
+                outerjoin(models.Task).\
+                    group_by(models.Job.id).first()
+    
     tasks = db.query(models.Task)\
-                .filter(models.Task.job == job)\
+                .filter(models.Task.job_id == id)\
                     .order_by(models.Task.id.desc())\
                         .limit(25).all()
-    return templates.TemplateResponse("job.html", {"job": job, "tasks": tasks, "request": request, "current_page": "Job"})
+    
+    context = {
+        "job": job_res[0],
+        "task_count": job_res[1],
+        "tasks": tasks,
+        "request": request,
+        "current_page": "Job"
+    }
+    return templates.TemplateResponse("job.html", context)
 
 
 @app.get("/filter/tasks", response_class=HTMLResponse)
