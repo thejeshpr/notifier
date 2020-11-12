@@ -105,11 +105,33 @@ async def sync_type_tasks(
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
 ):     
-    st = db.query(models.SyncType).filter(models.SyncType.id == id).first()
-    tasks = db.query(models.Task).filter(models.Task.sync_type == st).order_by(models.Task.id.desc()).offset( limit * page ).limit(25).all()
+    # st = db.query(models.SyncType).filter(models.SyncType.id == id).first()
+
+    # fetch sync type and stats
+    task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
+            .group_by(models.Task.sync_type_id).subquery()
+    job_sq = db.query(models.Job.sync_type_id, func.count(models.Job.sync_type_id).label('count'))\
+            .group_by(models.Job.sync_type_id).subquery()
+
+    res = db.query(models.SyncType, job_sq.c.count, task_sq.c.count)\
+                .join( 
+                        (job_sq, job_sq.c.sync_type_id == models.SyncType.id),
+                        (task_sq, task_sq.c.sync_type_id == models.SyncType.id)
+                    )\
+                    .filter(models.SyncType.id == id)\
+                        .first()
+
+
+    tasks = db.query(models.Task).filter(models.Task.sync_type_id == id)\
+                .order_by(models.Task.id.desc())\
+                    .offset( limit * page )\
+                        .limit(25)\
+                            .all()
 
     context = {
-        "sync_type": st,        
+        "sync_type": res[0],
+        "job_count": res[1],
+        "task_count": res[2],
         "tasks": tasks,
         "request": request,
         "current_page":"Sync Type Tasks",
