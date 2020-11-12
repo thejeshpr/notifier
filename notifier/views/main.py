@@ -67,16 +67,12 @@ async def sync_type(
                     .filter(models.SyncType.id == id)\
                     .first()    
 
-    # fetch jobs and task count
-    task_sq = db.query(models.Task.job_id, func.count(models.Task.job_id).label('count'))\
-            .group_by(models.Task.job_id).subquery()
-
-    job_res = db.query(models.Job, task_sq.c.count)\
-                .join(task_sq, task_sq.c.job_id == models.Job.id)\
-                    .filter(models.Job.sync_type_id == id)\
-                        .order_by(models.Job.id.desc())\
-                            .limit(10)\
-                                .all()    
+    # fetch jon and task count
+    job_res = db.query(models.Job, func.count(models.Task.id)).filter(models.Job.sync_type_id == id).\
+                outerjoin(models.Task).\
+                    group_by(models.Job.id).\
+                        order_by(models.Job.id.desc()).\
+                            limit(10).all()    
 
     tasks = db.query(models.Task)\
                 .filter(models.Task.sync_type_id == id)\
@@ -104,9 +100,7 @@ async def sync_type_tasks(
     limit: int = Query(default=25, le=25),    
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
-):     
-    # st = db.query(models.SyncType).filter(models.SyncType.id == id).first()
-
+):         
     # fetch sync type and stats
     task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
             .group_by(models.Task.sync_type_id).subquery()
@@ -121,7 +115,7 @@ async def sync_type_tasks(
                     .filter(models.SyncType.id == id)\
                         .first()
 
-
+    # fetch tasks
     tasks = db.query(models.Task).filter(models.Task.sync_type_id == id)\
                 .order_by(models.Task.id.desc())\
                     .offset( limit * page )\
@@ -154,7 +148,13 @@ async def latest_tasks(
                     .offset( limit * page )\
                         .limit(limit)\
                             .all()
-    return templates.TemplateResponse("tasks.html", {"items": items, "request": request, "page": page, "current_page": "Tasks"})
+    context = {
+        "items": items,
+        "request": request,
+        "page": page,
+        "current_page": "Tasks"
+    }
+    return templates.TemplateResponse("tasks.html", context)
 
 
 @app.get("/job/latest", response_class=HTMLResponse)
@@ -165,13 +165,20 @@ async def latest_jobs(
     limit: int = Query(default=25, le=25),
     user: User = Depends(fastapi_users.get_current_user)
 ):
-    
-    items = db.query(models.Job)\
-                .order_by(models.Job.id.desc())\
-                    .offset( limit * page )\
-                        .limit(limit)\
-                            .all()
-    return templates.TemplateResponse("jobs.html", {"items": items, "request": request, "page": page, "current_page": "Jobs"})
+    job_res = db.query(models.Job, func.count(models.Task.id)).\
+                outerjoin(models.Task).\
+                    group_by(models.Job.id).\
+                        order_by(models.Job.id.desc()).\
+                            offset( limit * page ).\
+                                limit(limit).all()    
+
+    context = {
+        "items": job_res,
+        "request": request,
+        "page": page,
+        "current_page": "Jobs"
+    }
+    return templates.TemplateResponse("jobs.html", context)
 
 
 @app.get("/job/{id}", response_class=HTMLResponse)

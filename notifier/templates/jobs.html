@@ -7,7 +7,9 @@
 
 {% block content %}
 <div class="">
-  {% for item in items %}
+  {% for job in items %}
+  {% set item = job[0] %}
+  {% set task_count = job[1] %}
   <div class="row">
      <div class="col col-12">
         <div class="card dark-mode">
@@ -39,7 +41,7 @@
                </h5>
               
               <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> <span class="badge badge-light">{{ key[1] }}</span></h6>
-              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i> Tasks: {{ item.tasks | length }}</h6>
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i> Tasks: {{ task_count }}</h6>
               <hr class="dm-background"/>
               <p>
                  <code class="loop-code">
