@@ -8,45 +8,49 @@
 {% block content %}
 <div class="">
   {% for item in items %}
+
+  {% set job = item[0] %}  
+  {% set task_count = item[1] %}
+
   <div class="row">
      <div class="col col-12">
         <div class="card dark-mode">
            <div class="card-body">
               <div class="float-right">
-                 {% if item.status == "PRODUCTIVE" %}
+                 {% if job.status == "PRODUCTIVE" %}
                   <span class="badge badge-success"><i class="las la-check-circle"></i> GOOD</span>
-                 {% elif item.status == "COMPLETED" %}
+                 {% elif job.status == "COMPLETED" %}
                   <span class="badge badge-primary"><i class="las la-check-double"></i> OK</span>
-                 {% elif item.status == "FAILED" %}
+                 {% elif job.status == "FAILED" %}
                   <span class="badge badge-danger"><i class="las la-times-circle"></i> BAD</span>
-                 {% elif item.status == "STARTED" %}                  
+                 {% elif job.status == "STARTED" %}                  
                   <span class="badge badge-pill badge-dark"><i class="las la-running"></i> OooOooO</span>
                  {% endif %}
               </div>
 
               <h5 class="card-title">
                  <span class="licon">
-                    <i class="las la-business-time"></i> #{{ item.id }}: 
+                    <i class="las la-business-time"></i> #{{ job.id }}: 
                   </span>
-                 <a href="{{ request.url_for('job', id=item.id) }}">
+                 <a href="{{ request.url_for('job', id=job.id) }}">
                   <span class="text-muted job-unique-key">
-                     {% set key = item.unique_key.split(':') %}                     
+                     {% set key = job.unique_key.split(':') %}                     
                      <span class="ltitle">{{ key[0] }}</span>
               
-                     {% if item.extras.url_query %} ({{ item.extras.url_query }}){% endif %}
+                     {% if job.extras.url_query %} ({{ job.extras.url_query }}){% endif %}
                   </span>
                  </a>
                </h5>
               
               <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> <span class="badge badge-light">{{ key[1] }}</span></h6>
-              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i> Tasks: {{ item.tasks | length }}</h6>
+              <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i> Tasks: {{ task_count }}</h6>
               <hr class="dm-background"/>
               <p>
                  <code class="loop-code">
-                  <strong><i class="las la-arrow-alt-circle-right"></i> Client IP:</strong> {{ item.extras.client_ip }}<br/>
-                  <strong><i class="las la-link"></i> URL Path:</strong> {{ item.extras.url_path }}<br/>
-                  <strong><i class="las la-link"></i> URL Query:</strong> {{ item.extras.url_query }}<br/>
-                 Error: {{ item.err }}
+                  <strong><i class="las la-arrow-alt-circle-right"></i> Client IP:</strong> {{ job.extras.client_ip }}<br/>
+                  <strong><i class="las la-link"></i> URL Path:</strong> {{ job.extras.url_path }}<br/>
+                  <strong><i class="las la-link"></i> URL Query:</strong> {{ job.extras.url_query }}<br/>
+                 Error: {{ job.err }}
                  </code>
               </p>
               

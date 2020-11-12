@@ -113,13 +113,24 @@ async def latest_jobs(
     limit: int = Query(default=25, le=25),
     user: User = Depends(fastapi_users.get_current_user)
 ):
-    request.url_for    
-    items = db.query(models.Job)\
+    
+    task_sq = db.query(models.Task.job_id, func.count(models.Task.job_id).label('count'))\
+                .group_by(models.Task.job_id).subquery()
+
+    res = db.query(models.Job, task_sq.c.count)\
+            .join(task_sq, task_sq.c.job_id == models.Job.id)\
                 .order_by(models.Job.id.desc())\
                     .offset( limit * page )\
                         .limit(limit)\
                             .all()
-    return templates.TemplateResponse("jobs.html", {"items": items, "request": request, "page": page, "current_page": "Jobs"})
+
+    context = {
+        "items": res,
+        "request": request,
+        "page": page,
+        "current_page": "Jobs",
+    }
+    return templates.TemplateResponse("jobs.html", context)
 
 
 @app.get("/job/{id}", response_class=HTMLResponse)
