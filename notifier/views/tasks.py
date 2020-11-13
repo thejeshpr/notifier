@@ -3,7 +3,7 @@ import os
 from notifier.db import SessionLocal
 from notifier import app
 # from notifier.db import Base, engine
-from notifier.routers import price_tracker_router, sync_type_router, task_router
+from notifier.routers import price_tracker_router, sync_type_router, task_router, url_test_router
 
 from notifier.db import models
 
@@ -27,6 +27,13 @@ app.include_router(
     sync_type_router,
     prefix=f"/api/{API_VER}/sync-type",
     tags=["SyncType"]
+)
+
+
+app.include_router(
+    url_test_router,
+    prefix=f"/api/{API_VER}/url-test",
+    tags=["URL Test"]
 )
 
 if os.environ.get("DEBUG"):
