@@ -5,49 +5,38 @@ from notifier.grabbers.base import Base, Internet
 class BKdko(object):    
 
     @staticmethod
-    def sync(obj: Base, *args, **kwargs):        
-        soup = Internet.get_soup_phjs(obj.sync_type.base_url)
-        divs = soup.find_all('div', {'class':'card card_news shadowWPadding'})[:15]
+    def sync(obj: Base, *args, **kwargs):
 
-        for div in divs[::-1]:                
-            content_div = div.find('div', {'class': 'gsc_col-sm-7 gsc_col-lg-8 holder'})            
-            a = content_div.find('h2').find('a')
+        res = Internet.html_get(obj.sync_type.base_url)
+        links = res.html.xpath("/html/body/div[2]/div/div[1]/div/main/div[3]/div[1]/div[1]/div/div[*]/div[2]/h2/a")        
 
-            link = a.get('href')                        
-            p = content_div.find('p', {'class':'hidden-xs'})
-            
+        for a in links[::-1]:            
+
+            link = a.attrs.get('href')                                                
             url = urllib.parse.urljoin(obj.sync_type.extras.get('post_url'), link)
             name = a.text.strip()    
-            desc = p.text.strip() if p else ""        
 
             obj.add_text_task(
                 unique_key=url,
                 name=name,
                 url=url,
-                data=dict(text=url, desc=desc)
+                data=dict(text=url)
             )
 
     @staticmethod
     def bkdko_road_test(obj: Base, *args, **kwargs):        
-        soup = Internet.get_soup_phjs(obj.sync_type.base_url)
-        divs = soup.find_all('div', {'class':'card card_news shadowWPadding'})[:15]
+        
+        res = Internet.html_get(obj.sync_type.base_url)
+        links = res.html.xpath("/html/body/div[2]/div/div[1]/div/main/div[3]/div[1]/div/div[1]/div/div[*]/div[2]/h2/a")        
 
-        for div in divs[::-1]:                
-            content_div = div.find('div', {'class': 'gsc_col-sm-7 gsc_col-lg-8 holder'})            
-            a = content_div.find('h2').find('a')
-
-            link = a.get('href')                        
-            p = content_div.find('p', {'class':'hidden-xs'})
-            
+        for a in links[::-1]:
+            link = a.attrs.get('href')            
             url = urllib.parse.urljoin(obj.sync_type.extras.get('post_url'), link)
-            name = a.text.strip()    
-            desc = p.text.strip() if p else ""  
-
-            print(url, name, desc)      
+            name = a.text.strip()                               
 
             obj.add_text_task(
                 unique_key=url,
                 name=name,
                 url=url,
-                data=dict(text=url, desc=desc)
+                data=dict(text=url)
             )

@@ -12,9 +12,7 @@ class BPanda(object):
                           
         res = Internet.html_get(url)
         links = res.html.xpath("/html/body/main/section/article[*]/h2/a")
-        
-        
-
+                
         for a in links[::-1]:            
             link = a.attrs.get("href").split("?")[0]            
             name = a.text.strip()
