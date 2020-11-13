@@ -11,7 +11,7 @@ class UrlTest(BaseModel):
 
 class UrlTestOut(BaseModel):
     url: HttpUrl    
-    status_code: Optional[str] = ''
+    status_code: Optional[int] = None
     headers: Optional[Dict[str, str]] = {}
     body: Optional[str] = ''
 
