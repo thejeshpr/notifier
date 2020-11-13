@@ -7,11 +7,9 @@
 
 {% block content %}
 <div class="">
-  {% for item in items %}
-
-  {% set job = item[0] %}  
-  {% set task_count = item[1] %}
-
+  {% for job in items %}
+  {% set item = job[0] %}
+  {% set task_count = job[1] %}
   <div class="row">
      <div class="col col-12">
         <div class="card dark-mode">

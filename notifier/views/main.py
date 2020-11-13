@@ -51,34 +51,34 @@ async def sync_type(
     id: int,
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
-):     
+):
 
+    # fetch sync type and stats
     task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
-                .filter(models.Task.sync_type_id == id)\
-                    .subquery()            
-                
+            .group_by(models.Task.sync_type_id).subquery()
     job_sq = db.query(models.Job.sync_type_id, func.count(models.Job.sync_type_id).label('count'))\
-                .filter(models.Job.sync_type_id == id)\
-                    .subquery()            
+            .group_by(models.Job.sync_type_id).subquery()
 
     res = db.query(models.SyncType, job_sq.c.count, task_sq.c.count)\
                 .join( 
                         (job_sq, job_sq.c.sync_type_id == models.SyncType.id),
                         (task_sq, task_sq.c.sync_type_id == models.SyncType.id)
-                    ).first()         
+                    )\
+                    .filter(models.SyncType.id == id)\
+                    .first()    
 
-    task_sq = db.query(models.Task.job_id, func.count(models.Task.job_id).label('count'))\
-                .group_by(models.Task.job_id).subquery()
-
-    job_res = db.query(models.Job, task_sq.c.count)\
-            .join(task_sq, task_sq.c.job_id == models.Job.id)\
-                .order_by(models.Job.id.desc())\
-                    .limit(10).all()
+    # fetch jon and task count
+    job_res = db.query(models.Job, func.count(models.Task.id)).filter(models.Job.sync_type_id == id).\
+                outerjoin(models.Task).\
+                    group_by(models.Job.id).\
+                        order_by(models.Job.id.desc()).\
+                            limit(10).all()    
 
     tasks = db.query(models.Task)\
                 .filter(models.Task.sync_type_id == id)\
                     .order_by(models.Task.id.desc())\
-                        .limit(25).all()    
+                        .limit(25).all()  
+
     context = {
         "sync_type": res[0],
         "job_count": res[1],
@@ -87,7 +87,7 @@ async def sync_type(
         "tasks": tasks,
         "request": request,
         "current_page": "Sync Type"
-    }
+    }  
 
     return templates.TemplateResponse("sync_type.html", context)
 
@@ -100,26 +100,26 @@ async def sync_type_tasks(
     limit: int = Query(default=25, le=25),    
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
-):     
-
+):         
+    # fetch sync type and stats
     task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
-                .filter(models.Task.sync_type_id == id)\
-                    .subquery()            
-                
+            .group_by(models.Task.sync_type_id).subquery()
     job_sq = db.query(models.Job.sync_type_id, func.count(models.Job.sync_type_id).label('count'))\
-                .filter(models.Job.sync_type_id == id)\
-                    .subquery()            
+            .group_by(models.Job.sync_type_id).subquery()
 
     res = db.query(models.SyncType, job_sq.c.count, task_sq.c.count)\
                 .join( 
                         (job_sq, job_sq.c.sync_type_id == models.SyncType.id),
                         (task_sq, task_sq.c.sync_type_id == models.SyncType.id)
-                    ).first()
+                    )\
+                    .filter(models.SyncType.id == id)\
+                        .first()
 
-    tasks = db.query(models.Task)\
-                .filter(models.Task.sync_type_id == id)\
-                    .order_by(models.Task.id.desc())\
-                        .offset( limit * page ).limit(25)\
+    # fetch tasks
+    tasks = db.query(models.Task).filter(models.Task.sync_type_id == id)\
+                .order_by(models.Task.id.desc())\
+                    .offset( limit * page )\
+                        .limit(25)\
                             .all()
 
     context = {
@@ -148,7 +148,13 @@ async def latest_tasks(
                     .offset( limit * page )\
                         .limit(limit)\
                             .all()
-    return templates.TemplateResponse("tasks.html", {"items": items, "request": request, "page": page, "current_page": "Tasks"})
+    context = {
+        "items": items,
+        "request": request,
+        "page": page,
+        "current_page": "Tasks"
+    }
+    return templates.TemplateResponse("tasks.html", context)
 
 
 @app.get("/job/latest", response_class=HTMLResponse)
@@ -159,22 +165,18 @@ async def latest_jobs(
     limit: int = Query(default=25, le=25),
     user: User = Depends(fastapi_users.get_current_user)
 ):
-    
-    task_sq = db.query(models.Task.job_id, func.count(models.Task.job_id).label('count'))\
-                .group_by(models.Task.job_id).subquery()
-
-    res = db.query(models.Job, task_sq.c.count)\
-            .join(task_sq, task_sq.c.job_id == models.Job.id)\
-                .order_by(models.Job.id.desc())\
-                    .offset( limit * page )\
-                        .limit(limit)\
-                            .all()
+    job_res = db.query(models.Job, func.count(models.Task.id)).\
+                outerjoin(models.Task).\
+                    group_by(models.Job.id).\
+                        order_by(models.Job.id.desc()).\
+                            offset( limit * page ).\
+                                limit(limit).all()    
 
     context = {
-        "items": res,
+        "items": job_res,
         "request": request,
         "page": page,
-        "current_page": "Jobs",
+        "current_page": "Jobs"
     }
     return templates.TemplateResponse("jobs.html", context)
 
@@ -185,24 +187,23 @@ async def job(
     id: int,
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
-):
-    task_sq = db.query(models.Task.job_id, func.count(models.Task.job_id).label('count'))\
-                .filter(models.Task.job_id == id).subquery()
+):    
 
-    res = db.query(models.Job, task_sq.c.count)\
-            .join(task_sq, task_sq.c.job_id == models.Job.id)\
-                .first()
-
+    job_res = db.query(models.Job, func.count(models.Task.id)).filter(models.Job.id == id).\
+                outerjoin(models.Task).\
+                    group_by(models.Job.id).first()
+    
     tasks = db.query(models.Task)\
                 .filter(models.Task.job_id == id)\
                     .order_by(models.Task.id.desc())\
-                        .all()
+                        .limit(25).all()
+    
     context = {
-        "job": res[0],
-        "task_count": res[1],
+        "job": job_res[0],
+        "task_count": job_res[1],
         "tasks": tasks,
         "request": request,
-        "current_page": "Job",
+        "current_page": "Job"
     }
     return templates.TemplateResponse("job.html", context)
 
