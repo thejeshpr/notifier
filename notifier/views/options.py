@@ -33,3 +33,4 @@ class SyncTypeSet(str, Enum):
     bpanda = "bpanda"
     fml = "fml"
     mm = "mm"
+    avidhya = "avidhya"

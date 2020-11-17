@@ -31,6 +31,7 @@ from notifier.grabbers.psily import PSily
 from notifier.grabbers.bpanda import BPanda
 from notifier.grabbers.fml import FML
 from notifier.grabbers.mm import MM
+from notifier.grabbers.avidhya import Avidhya
 
 
 SYNC_GRABBERS = {    
@@ -60,6 +61,7 @@ SYNC_GRABBERS = {
     "bpanda": BPanda.sync,
     "fml": FML.sync,
     "mm": MM.sync,
+    "avidhya": Avidhya.sync,
 }
 
 
