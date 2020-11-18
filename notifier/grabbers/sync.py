@@ -30,6 +30,9 @@ from notifier.grabbers.in_fit_in_health import InFitInHealth
 from notifier.grabbers.psily import PSily
 from notifier.grabbers.bpanda import BPanda
 from notifier.grabbers.fml import FML
+from notifier.grabbers.mm import MM
+from notifier.grabbers.avidhya import Avidhya
+
 
 SYNC_GRABBERS = {    
     "pricetracker": PriceTrackerSync.sync,
@@ -57,7 +60,8 @@ SYNC_GRABBERS = {
     "psily": PSily.sync,    
     "bpanda": BPanda.sync,
     "fml": FML.sync,
-
+    "mm": MM.sync,
+    "avidhya": Avidhya.sync,
 }
 
 

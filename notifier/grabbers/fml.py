@@ -7,15 +7,25 @@ class FML(object):
     @staticmethod
     def sync(obj: Base, *args, **kwargs):            
         cat = kwargs.get("cat", "")        
-        url = obj.sync_type.base_url.format(cat=cat)
-        print(url)
-                
-        soup = Internet.get_soup_phjs(url)        
-        links = soup.find_all('a', {'class':'article-link'})        
-        f_url = obj.sync_type.extras.get("base_url")
+        url = obj.sync_type.base_url.format(cat=cat)        
+        
+        res = Internet.html_get(url)
 
-        for a in links[::-1]:                        
-            link = urljoin(f_url, a.get("href"))            
+        xpaths = [
+            "/html/body/main/div[2]/div/div/div[1]/div/div[2]/div/article[*]/div/div[2]/a",
+            "/html/body/main/div[2]/div/div/div[1]/div/article[*]/div/div[2]/a",
+        ]
+
+        links = []
+
+        for xpath in xpaths:
+            links = res.html.xpath(xpath)
+            if links: break
+        
+        f_url = obj.sync_type.extras.get("base_url")
+        
+        for a in links[::-1]:            
+            link = urljoin(f_url, a.attrs.get("href"))
             name = a.text.strip().replace("\n", "--")
             
             obj.add_text_task(

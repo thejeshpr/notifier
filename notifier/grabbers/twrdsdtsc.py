@@ -8,7 +8,14 @@ class Twrdsdtsc(object):
     def sync(obj: Base, *args, **kwargs):
                 
         r = Internet.html_get(obj.sync_type.base_url)
-        links = r.html.xpath('/html/body/div/div/div[3]/div/div[2]/div/div[*]/div/div/div/div[1]/div[2]/div/section/div/h1/a')
+
+        links = []
+
+        xpaths = obj.sync_type.extras.get("xp")        
+
+        for xpath in xpaths:
+            links = r.html.xpath(xpath)            
+            if links: break    
         
         for a in links[::-1]:            
             path = a.attrs.get('href').split("?")[0]
