@@ -122,13 +122,23 @@ class Base(object):
     def write_tasks(self):
         """
         verify and add task to job
-        """        
-        # iterate each task        
+        """                
+
+        # check article extraction required or not
+        extract_article = self.sync_type.extras.get("extract_article", False)
+
+        # iterate each task
         for task in self.tasks:
             # check if task not found add it
             if not self.is_task_found(task.unique_key):
                 try:
                     task.data["timestamp"] = self.get_current_time()
+
+                    # extract article
+                    if extract_article:
+                        time.sleep(2)
+                        task.data['desc'] = Internet.get_article_data(task.url)
+
                     self.db.add(
                         models.Task(
                             unique_key=task.unique_key,
@@ -415,7 +425,22 @@ class Internet(object):
         establish http request
         """
         session = HTMLSession()
-        return session.get(url)        
+        return session.get(url)  
+
+
+    @staticmethod
+    def get_article_data(url: str) -> str:
+        """
+        returns article of given URL
+        """
+        api_url = "https://api.diffbot.com/v3/article"
+        params = {
+            "token": os.environ.get("DIFF_BOT_API_TOKEN"),
+            "url": url
+        }
+        res = requests.get(api_url, params=params)        
+        Internet.check_status_code(res)
+        return res.json()["objects"][0]["text"]
 
 
 class Notify(object):
@@ -565,3 +590,5 @@ class Notify(object):
                 .order_by(models.Task.id.desc())\
                     .limit(50)\
                         .all()
+
+

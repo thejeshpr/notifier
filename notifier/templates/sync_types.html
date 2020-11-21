@@ -18,7 +18,7 @@
                      <i class="las la-sync"></i> #{{ sync_type.id }}: 
                   </span>
                   <a href="{{ request.url_for('sync_type', id=sync_type.id) }}">
-                     <span class="text-muted ltitle">{{ sync_type.name }}</span>
+                     <span class="ltitle">{{ sync_type.name }}</span>
                   </a>
                </h5>              
               <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar-alt"></i> Timestamp: {{ sync_type.created_at }}</h6>
