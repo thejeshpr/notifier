@@ -71,7 +71,7 @@ async def dashboard(
         from_date = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
     
 
-    from_date = from_date - timedelta(hours=7, minutes=26)
+    # from_date = from_date - timedelta(hours=7, minutes=26)
     # from_date = get_current_time(from_date)
     # print("------------------------------") 
     # print(from_date, "-", to_date)
