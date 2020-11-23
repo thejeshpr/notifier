@@ -101,8 +101,11 @@ async def dashboard(
     from_dt = f"{from_date.day}/{from_date.month}/{from_date.year}"
     to_dt = f"{to_date.day}/{to_date.month}/{to_date.year}"
 
+    # sort items by count
+    sorted_items = sorted(res, key=lambda x:x[1] if x[1] else 0, reverse=True)
+
     context = {
-        "items": res,
+        "items": sorted_items,
         "from_dt": from_dt,
         "to_dt": to_dt,
         "days": range(1,32),
