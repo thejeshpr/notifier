@@ -77,7 +77,7 @@
                         {% set task_count = item[1] %}
                         <tr>
                             <th scope="row"><a href="{{ request.url_for('sync_type', id=sync_type.id) }}" class="licon">{{ sync_type.name }}</a></th>
-                            <td>{{ task_count }}</td>                            
+                            <td>{{ task_count or 0}}</td>                            
                         </tr>
                         {% else %}
                         <tr>

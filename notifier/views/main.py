@@ -71,7 +71,7 @@ async def dashboard(
             .group_by(models.Task.sync_type_id).subquery()
 
     res = db.query(models.SyncType, task_sq.c.count)\
-                .join(task_sq, task_sq.c.sync_type_id == models.SyncType.id)\
+                .outerjoin(task_sq, task_sq.c.sync_type_id == models.SyncType.id)\
                     .order_by(task_sq.c.count.desc()).all() 
 
     from_dt = f"{from_date.day}/{from_date.month}/{from_date.year}"
