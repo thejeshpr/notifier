@@ -11,8 +11,10 @@ from sqlalchemy import func, and_
 from notifier.views import get_db
 from notifier.db import models
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
+
+DATE_FORMAT = "%Y-%m-%d"
 
 @app.get("/ping")
 async def ping():
@@ -30,7 +32,7 @@ async def index(
     request: Request,
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
-):    
+    ):    
     task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
             .group_by(models.Task.sync_type_id).subquery()
     job_sq = db.query(models.Job.sync_type_id, func.count(models.Job.sync_type_id).label('count'))\
@@ -48,13 +50,6 @@ async def index(
     }
     return templates.TemplateResponse("sync_types.html", context)
 
-import pytz
-
-def get_current_time(date):        
-    utcmoment = date.replace(tzinfo=pytz.utc)
-    tz = os.environ.get("TZ")
-    conv_dt = utcmoment.astimezone(pytz.timezone(tz))    
-    return conv_dt
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(
@@ -64,7 +59,7 @@ async def dashboard(
     year: int = Query(None, ge=2020, le=2037),
     db: Session = Depends(get_db),    
     user: User = Depends(fastapi_users.get_current_user)
-):
+    ):
     if day and month and year:
         from_date = datetime(year, month, day)
     else:
@@ -86,16 +81,18 @@ async def dashboard(
             ))\
             .group_by(models.Task.sync_type_id).subquery()
 
-    # tasks = db.query(models.Task).filter(and_(
-    #             models.Task.created_at >= from_date,
-    #             models.Task.created_at <= to_date,
-    #         )).all()
-    
-    # for task in tasks:
-    #     print(task.created_at, task.data.get("timestamp"), task.name)
+    job_sq = db.query(models.Job.sync_type_id, func.count(models.Job.sync_type_id).label('count'))\
+            .filter(and_(
+                models.Job.created_at >= from_date,
+                models.Job.created_at <= to_date,
+            ))\
+            .group_by(models.Job.sync_type_id).subquery()
 
-    res = db.query(models.SyncType, task_sq.c.count)\
-                .outerjoin(task_sq, task_sq.c.sync_type_id == models.SyncType.id)\
+    res = db.query(models.SyncType, task_sq.c.count, job_sq.c.count)\
+                .outerjoin(
+                    (job_sq, job_sq.c.sync_type_id == models.SyncType.id),
+                    (task_sq, task_sq.c.sync_type_id == models.SyncType.id)
+                    )\
                     .order_by(task_sq.c.count.desc()).all() 
 
     from_dt = f"{from_date.day}/{from_date.month}/{from_date.year}"
@@ -115,9 +112,13 @@ async def dashboard(
         "selected_month": from_date.month,
         "selected_year": from_date.year,
         "current_page": "Dashboard",
+        "from_date": from_date.strftime(DATE_FORMAT),
+        "to_date": to_date.strftime(DATE_FORMAT),
         "request": request
     }    
     return templates.TemplateResponse("dashboard.html", context)
+
+    
 
 
 
@@ -127,7 +128,7 @@ async def sync_type(
     id: int,
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
-):
+    ):
 
     # fetch sync type and stats
     task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
@@ -171,12 +172,13 @@ async def sync_type(
 @app.get("/sync-type/{id}/tasks", response_class=HTMLResponse)
 async def sync_type_tasks(
     request: Request,
-    id: int,
+    id: int,    
     page: int = Query(0),
     limit: int = Query(default=25, le=25),    
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
-):         
+    ):         
+    
     # fetch sync type and stats
     task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
             .group_by(models.Task.sync_type_id).subquery()
@@ -211,6 +213,67 @@ async def sync_type_tasks(
     return templates.TemplateResponse("sync_type_tasks.html", context)
 
 
+@app.get("/sync-type/{id}/tasks-by-date/{from_date}/{to_date}", response_class=HTMLResponse)
+async def sync_type_tasks_by_date(
+    request: Request,
+    id: int,
+    from_date: date,
+    to_date: date,
+    page: int = Query(0),
+    limit: int = Query(default=25, le=25),    
+    db: Session = Depends(get_db),
+    user: User = Depends(fastapi_users.get_current_user)
+    ):         
+
+    
+    task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
+            .filter(and_(
+                models.Task.created_at >= from_date,
+                models.Task.created_at <= to_date
+            ))\
+            .group_by(models.Task.sync_type_id).subquery()
+        
+    job_sq = db.query(models.Job.sync_type_id, func.count(models.Job.sync_type_id).label('count'))\
+            .filter(and_(
+                models.Job.created_at >= from_date,
+                models.Job.created_at <= to_date,
+            ))\
+            .group_by(models.Job.sync_type_id).subquery()
+
+    res = db.query(models.SyncType, job_sq.c.count, task_sq.c.count)\
+                .join( 
+                        (job_sq, job_sq.c.sync_type_id == models.SyncType.id),
+                        (task_sq, task_sq.c.sync_type_id == models.SyncType.id)
+                    )\
+                    .filter(models.SyncType.id == id)\
+                        .first()
+
+    # fetch tasks
+    tasks = db.query(models.Task).filter(models.Task.sync_type_id == id)\
+            .filter(and_(
+                    models.Task.created_at >= from_date,
+                    models.Task.created_at <= to_date
+                ))\
+                .order_by(models.Task.id.desc())\
+                    .offset( limit * page )\
+                        .limit(25)\
+                            .all()
+
+    context = {
+        "sync_type": res[0],
+        "job_count": res[1],
+        "task_count": res[2],
+        "tasks": tasks,
+        "request": request,
+        "current_page":"Sync Type Tasks by Date",
+        "from_date": from_date.strftime(DATE_FORMAT),
+        "to_date": to_date.strftime(DATE_FORMAT),
+        "page": page,
+    }
+
+    return templates.TemplateResponse("sync_type_tasks_by_date.html", context)
+
+
 @app.get("/task/latest", response_class=HTMLResponse)
 async def latest_tasks(
     request: Request,
@@ -218,7 +281,7 @@ async def latest_tasks(
     page: int = Query(0),
     limit: int = Query(default=25, le=25),
     user: User = Depends(fastapi_users.get_current_user)
-):
+    ):
     items = db.query(models.Task)\
                 .order_by(models.Task.id.desc())\
                     .offset( limit * page )\
@@ -240,7 +303,7 @@ async def latest_jobs(
     page: int = Query(0),
     limit: int = Query(default=25, le=25),
     user: User = Depends(fastapi_users.get_current_user)
-):
+    ):
     job_res = db.query(models.Job, func.count(models.Task.id)).\
                 outerjoin(models.Task).\
                     group_by(models.Job.id).\
@@ -263,7 +326,7 @@ async def job(
     id: int,
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
-):    
+    ):    
 
     job_res = db.query(models.Job, func.count(models.Task.id)).filter(models.Job.id == id).\
                 outerjoin(models.Task).\
@@ -289,7 +352,7 @@ def filter_render(
     request: Request,
     db: Session = Depends(get_db),
     user: User = Depends(fastapi_users.get_current_user)
-):    
+    ):    
 
     filter_params = {
 

@@ -70,16 +70,25 @@
                     <thead>
                       <tr class="ltitle" style="color: white;">                        
                         <th scope="col"><i class="las la-key"></i> SyncType</th>                          
-                        <th scope="col"><i class="las la-tasks"></i> Tasks</th>                                                     
+                        <th scope="col"><i class="las la-tasks"></i> Tasks</th>
+                        <th scope="col"><i class="las la-tasks"></i> Jobs</th>                                                     
                       </tr>
                     </thead>
                     <tbody>
                         {% for item in items %}
                         {% set sync_type = item[0] %}
                         {% set task_count = item[1] %}
+                        {% set job_count = item[2] %}
                         <tr>
                             <th scope="row"><a href="{{ request.url_for('sync_type', id=sync_type.id) }}" class="licon">{{ sync_type.name }}</a></th>
-                            <td>{{ task_count or 0}}</td>                            
+                            <td>
+                                {% if task_count %}
+                                    <a href="{{ request.url_for('sync_type_tasks_by_date', id=sync_type.id, from_date=from_date, to_date=to_date) }}" target="_blank">{{ task_count }}</a>
+                                {% else %}
+                                    0
+                                {% endif %}             
+                            </td>               
+                            <td>{{ job_count or 0}}</td>                            
                         </tr>
                         {% else %}
                         <tr>
