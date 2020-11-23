@@ -31,7 +31,7 @@ class SyncType(Base):
     """
     __tablename__ = "sync_type"
 
-    created_at              = Column(DateTime, default=get_current_time)
+    created_at              = Column(DateTime, default=datetime.now)
     base_url                = Column(Text, nullable=True)                                      
     dispatch_notification   = Column(Boolean, default=True, nullable=True)
     disable_parse_web       = Column(Boolean, default=True, nullable=True)
@@ -53,7 +53,7 @@ class Job(Base):
     """    
     __tablename__ = "jobs"
 
-    created_at      = Column(DateTime(timezone=True), default=get_current_time)  
+    created_at      = Column(DateTime(timezone=True), default=datetime.now)  
     err             = Column(Text, nullable=True)
     extras          = Column(JSON, nullable=True)    
     id              = Column(Integer, unique=True, primary_key=True, autoincrement=True)
@@ -70,7 +70,7 @@ class Task(Base):
     """
     __tablename__ = "tasks"
     
-    created_at  = Column(DateTime, default=get_current_time())
+    created_at  = Column(DateTime, default=datetime.now)
     data        = Column(JSON, nullable=True)
     id          = Column(Integer, unique=True, primary_key=True, autoincrement=True)
     job         = relationship("Job", back_populates="tasks")

@@ -1,3 +1,5 @@
+import os
+
 from notifier import app, templates
 from fastapi import Request, Depends, Query
 from fastapi.responses import ORJSONResponse, HTMLResponse
@@ -46,6 +48,13 @@ async def index(
     }
     return templates.TemplateResponse("sync_types.html", context)
 
+import pytz
+
+def get_current_time(date):        
+    utcmoment = date.replace(tzinfo=pytz.utc)
+    tz = os.environ.get("TZ")
+    conv_dt = utcmoment.astimezone(pytz.timezone(tz))    
+    return conv_dt
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(
@@ -61,14 +70,29 @@ async def dashboard(
     else:
         from_date = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
     
-    to_date = from_date + timedelta(days=1)    
+
+    from_date = from_date - timedelta(hours=7, minutes=26)
+    # from_date = get_current_time(from_date)
+    # print("------------------------------") 
+    # print(from_date, "-", to_date)
+    # print(get_current_time(from_date))
+
+    to_date = from_date + timedelta(days=1)   
     
     task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
             .filter(and_(
-                models.Task.created_at > from_date,
-                models.Task.created_at < to_date,
+                models.Task.created_at >= from_date,
+                models.Task.created_at <= to_date,
             ))\
             .group_by(models.Task.sync_type_id).subquery()
+
+    # tasks = db.query(models.Task).filter(and_(
+    #             models.Task.created_at >= from_date,
+    #             models.Task.created_at <= to_date,
+    #         )).all()
+    
+    # for task in tasks:
+    #     print(task.created_at, task.data.get("timestamp"), task.name)
 
     res = db.query(models.SyncType, task_sq.c.count)\
                 .outerjoin(task_sq, task_sq.c.sync_type_id == models.SyncType.id)\

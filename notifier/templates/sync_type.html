@@ -118,7 +118,7 @@
                             <span class="licon"><i class="las la-key"></i> Key:</span> 
                             <span class="unique-key">{{ item.unique_key }}</span>
                         </h6>
-                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: <span class="badge badge-light">{{ item.data.get("timestamp") or item.created_at }}</span></h6>                        
+                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: <span class="badge badge-light">{{ item.data.get("timestamp") or item.created_at }}</span> <span class="text-muted">({{ item.created_at }})</span></h6>                        
                         
                         <hr class="dm-background"/>
                         <a class="float-right" data-toggle="collapse" href="#collapseExample-{{ loop.index }}" role="button" aria-expanded="false" aria-controls="collapseExample">
