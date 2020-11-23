@@ -4,10 +4,12 @@ from fastapi.responses import ORJSONResponse, HTMLResponse
 from sqlalchemy.orm import Session
 from notifier.views.users import User, fastapi_users
 
-from sqlalchemy import func
+from sqlalchemy import func, and_
 
 from notifier.views import get_db
 from notifier.db import models
+
+from datetime import datetime, timedelta
 
 
 @app.get("/ping")
@@ -43,6 +45,53 @@ async def index(
         "request": request
     }
     return templates.TemplateResponse("sync_types.html", context)
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(
+    request: Request,
+    day: int = Query(None, ge=1, le=31),
+    month: int = Query(None, ge=1, le=12),
+    year: int = Query(None, ge=2020, le=2037),
+    db: Session = Depends(get_db),    
+    user: User = Depends(fastapi_users.get_current_user)
+):
+    if day and month and year:
+        from_date = datetime(year, month, day)
+    else:
+        from_date = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
+    
+    to_date = from_date + timedelta(days=1)    
+    
+    task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
+            .filter(and_(
+                models.Task.created_at > from_date,
+                models.Task.created_at < to_date,
+            ))\
+            .group_by(models.Task.sync_type_id).subquery()
+
+    res = db.query(models.SyncType, task_sq.c.count)\
+                .join(task_sq, task_sq.c.sync_type_id == models.SyncType.id)\
+                    .order_by(task_sq.c.count.desc()).all() 
+
+    from_dt = f"{from_date.day}/{from_date.month}/{from_date.year}"
+    to_dt = f"{to_date.day}/{to_date.month}/{to_date.year}"
+
+    context = {
+        "items": res,
+        "from_dt": from_dt,
+        "to_dt": to_dt,
+        "days": range(1,32),
+        "months": range(1,13),
+        "years": range(2020,2022),
+        "selected_day": from_date.day,
+        "selected_month": from_date.month,
+        "selected_year": from_date.year,
+        "current_page": "Dashboard",
+        "request": request
+    }    
+    return templates.TemplateResponse("dashboard.html", context)
+
 
 
 @app.get("/sync-type/{id}", response_class=HTMLResponse)

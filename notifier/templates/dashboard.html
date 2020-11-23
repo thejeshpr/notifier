@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}SyncTypes | Dashboard {% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col col-12">
+
+        <div class="card dark-mode">
+            <div class="card-body">                                        
+                <h5 class="card-title">
+                    <span class="licon">
+                       <i class="las la-sync"></i> Trends: <span class="badge badge-secondary">{{ from_dt }}</span> - <span class="badge badge-secondary">{{ to_dt }}</span>
+                    </span>
+                 </h5>              
+
+                 <div>
+                    <form class="form-inline">
+
+                        <div class="form-group mb-2">
+                          <label for="select-day" class="licon">Day:&nbsp;</label>
+                          <select class="form-control" id="select-day" name="day" value="{{ selected_day }}">
+                              {% for day in days  %}
+                                {% if day == selected_day %}
+                                    <option selected="selected">{{ day }}</option>
+                                {% else %}
+                                    <option>{{ day }}</option>
+                                {% endif %}                                
+                              {% endfor %}                            
+                          </select>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label for="select-month" class="licon">&nbsp;&nbsp;Month:&nbsp;</label>
+                            <select class="form-control" id="select-month" name="month">
+                                {% for month in months  %}
+                                    {% if month == selected_month %}
+                                        <option selected="selected">{{ month }}</option>
+                                    {% else %}
+                                        <option>{{ month }}</option>
+                                    {% endif %}                   
+                                {% endfor %}                                          
+                            </select>
+                        </div>
+                        
+                        <div class="form-group mb-2">
+                            <label for="select-year" class="licon">&nbsp;&nbsp;Year:&nbsp;</label>
+                            <select class="form-control" id="select-year" name="year">
+                                {% for year in years  %}
+                                    {% if year == selected_year %}
+                                        <option selected="selected">{{ year }}</option>
+                                    {% else %}
+                                        <option>{{ year }}</option>
+                                    {% endif %}                   
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        &nbsp;&nbsp;<button type="submit" class="btn btn-primary mb-2">Filter</button>
+                      </form>
+                 </div>
+
+                 <hr class="dm-background"/>
+                 
+                 <table class="table table-dark table-responsive">
+                    <thead>
+                      <tr class="ltitle" style="color: white;">                        
+                        <th scope="col"><i class="las la-key"></i> SyncType</th>                          
+                        <th scope="col"><i class="las la-tasks"></i> Tasks</th>                                                     
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        {% set sync_type = item[0] %}
+                        {% set task_count = item[1] %}
+                        <tr>
+                            <th scope="row"><a href="{{ request.url_for('sync_type', id=sync_type.id) }}" class="licon">{{ sync_type.name }}</a></th>
+                            <td>{{ task_count }}</td>                            
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <th scope="row">No Tasks found</th>
+                            <td></td>                      
+                        </tr>
+                        {% endfor %}                                                            
+                    </tbody>
+                </table>
+
+            </div>
+        </div>                
+
+    </div>
+</div>
+
+
+
+<div>
+    
+</div>
+
+{% endblock %}
