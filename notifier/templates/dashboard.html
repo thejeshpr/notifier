@@ -80,7 +80,7 @@
                         {% set task_count = item[1] %}
                         {% set job_count = item[2] %}
                         <tr>
-                            <th scope="row"><a href="{{ request.url_for('sync_type', id=sync_type.id) }}" class="licon">{{ sync_type.name }}</a></th>
+                            <th scope="row"><a href="{{ request.url_for('sync_type', id=sync_type.id) }}" class="licon"><i class="{{ sync_type.extras.get('licon')}}"></i> {{ sync_type.name }}</a></th>
                             <td>
                                 {% if task_count %}
                                     <a href="{{ request.url_for('sync_type_tasks_by_date', id=sync_type.id, from_date=from_date, to_date=to_date) }}" target="_blank">{{ task_count }}</a>
