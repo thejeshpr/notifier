@@ -369,6 +369,29 @@ async def bookmark(
             status_code=404
         )
 
+
+@app.get("/bookmarks", response_class=HTMLResponse)
+async def bookmarks(
+    request: Request,
+    db: Session = Depends(get_db),
+    page: int = Query(0),
+    limit: int = Query(default=25, le=25),
+    user: User = Depends(fastapi_users.get_current_user)
+    ):
+    items = db.query(models.Task)\
+                .filter(models.Task.bookmark == True)\
+                    .order_by(models.Task.id.desc())\
+                        .offset( limit * page )\
+                            .limit(limit)\
+                                .all()
+    context = {
+        "items": items,
+        "request": request,
+        "page": page,
+        "current_page": "Bookmarks"
+    }
+    return templates.TemplateResponse("tasks.html", context)
+
     
 
 
@@ -485,3 +508,5 @@ def parse_params(param: str) -> dict:
 #     user: User = Depends(fastapi_users.get_current_user)
 # ):
 #     # pass
+
+
