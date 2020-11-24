@@ -36,3 +36,4 @@ class SyncTypeSet(str, Enum):
     avidhya = "avidhya"
     gsm = "gsm"
     fredcdmp = "frecdcmp"
+    thephoblographer = "thephoblographer"
