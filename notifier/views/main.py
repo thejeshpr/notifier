@@ -155,6 +155,8 @@ async def sync_type(
                 .filter(models.Task.sync_type_id == id)\
                     .order_by(models.Task.id.desc())\
                         .limit(25).all()  
+    for task in tasks:
+        print(task.name, task.bookmark)
 
     context = {
         "sync_type": res[0],
@@ -345,6 +347,31 @@ async def job(
         "current_page": "Job"
     }
     return templates.TemplateResponse("job.html", context)
+
+
+@app.get("/bookmark/{id}", response_class=ORJSONResponse)
+async def bookmark(
+        request: Request,
+        id: int,
+        db: Session = Depends(get_db),
+        user: User = Depends(fastapi_users.get_current_user)
+    ): 
+
+    task = db.query(models.Task).filter(models.Task.id == id).first()
+    if task:
+        task.bookmark = True
+        db.commit()
+        return ORJSONResponse(
+            content=dict(ok=True, message="bookmarked", title=task.name, id=id),
+            status_code=200
+        )
+    else:
+        return ORJSONResponse(
+            content=dict(ok=False, message=f"No task found with id {id}"),
+            status_code=404
+        )
+
+    
 
 
 @app.get("/filter/tasks", response_class=HTMLResponse)

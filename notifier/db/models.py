@@ -80,7 +80,8 @@ class Task(Base):
     sync_type_id  = Column(Integer, ForeignKey('sync_type.id'))
     task_type     = Column(String, nullable=True)
     unique_key    = Column(Text, unique=True, index=True)
-    url           = Column(Text, nullable=True)    
+    url           = Column(Text, nullable=True)
+    bookmark      = Column(Boolean, default=False, nullable=True)
 
 
 class PriceTracker(Base):
