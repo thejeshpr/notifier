@@ -154,9 +154,7 @@ async def sync_type(
     tasks = db.query(models.Task)\
                 .filter(models.Task.sync_type_id == id)\
                     .order_by(models.Task.id.desc())\
-                        .limit(25).all()  
-    for task in tasks:
-        print(task.name, task.bookmark)
+                        .limit(25).all()      
 
     context = {
         "sync_type": res[0],
