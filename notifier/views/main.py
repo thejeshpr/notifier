@@ -100,6 +100,12 @@ async def dashboard(
 
     # sort items by count
     sorted_items = sorted(res, key=lambda x:x[1] if x[1] else 0, reverse=True)
+    
+    count = 0
+
+    for r in res:
+        if r[1]:
+            count = count + int(r[1])
 
     context = {
         "items": sorted_items,
@@ -114,6 +120,7 @@ async def dashboard(
         "current_page": "Dashboard",
         "from_date": from_date.strftime(DATE_FORMAT),
         "to_date": to_date.strftime(DATE_FORMAT),
+        "task_count": count,
         "request": request
     }    
     return templates.TemplateResponse("dashboard.html", context)
