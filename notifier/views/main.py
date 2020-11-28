@@ -272,7 +272,7 @@ async def sync_type_tasks_by_date(
         "task_count": res[2],
         "tasks": tasks,
         "request": request,
-        "current_page":"Sync Type Tasks by Date",
+        "current_page":"ST by Date",
         "from_date": from_date.strftime(DATE_FORMAT),
         "to_date": to_date.strftime(DATE_FORMAT),
         "page": page,
