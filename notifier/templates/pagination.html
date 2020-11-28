@@ -4,10 +4,7 @@
       <li class="page-item"><a class="page-link dark-mode" style="color: cornsilk;" href="{{ request.url_for(url_name) }}?page={{page - 1}}">Prev</a></li>
     {% else %}
       <li class="page-item"><a class="page-link dark-mode" style="color: cornsilk;" href="{{ request.url_for(url_name) }}">Prev</a></li>
-    {% endif %}
-      <!-- <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li> -->
+    {% endif %}      
       <li class="page-item"><a class="page-link dark-mode" style="color: cornsilk;" href="{{ request.url_for(url_name) }}?page={{page + 1}}">Next</a></li>
     </ul>
 </nav>

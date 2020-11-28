@@ -52,51 +52,9 @@
     <hr class="dm-background"/>    
 
     <div>
-        {% for item in tasks %}
-        <div class="row">
-            <div class="col col-12">
+        {% set items = tasks %}
 
-                <div class="card dark-mode">
-                    <div class="card-body">                        
-                        <h5 class="card-title">
-                            <span class="licon">
-                                <i class="las la-file"></i> # {{ item.id }} :
-                             </span> 
-                             <a href="{{ item.url }}" target="_blank">
-                                <span class="ltitle">{{ item.name }}</span>
-                             </a>               
-                        </h5>                        
-                        <h6 class="card-subtitle mb-2">
-                            <span class="licon"><i class="las la-key"></i> Key:</span> 
-                            <span class="unique-key">{{ item.unique_key }}</span>
-                        </h6>
-                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-sync"></i> Type: {{ item.sync_type.name }}</h6>
-                        <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: <span class="badge badge-light">{{ item.data.get("timestamp") or item.created_at }}</span></h6>
-                        <hr class="dm-background"/>
-                        <p>
-                            <code class="loop-code">                            
-                                {% for key in item.data %}                        
-                                <strong><i class="las la-feather-alt"></i> {{ key }}</strong>: {{ item.data.get(key) }}
-                                <br/>                        
-                                {% endfor %}
-                            </code>
-                        </p>   
-                        
-                        <a class="float-right" href="{{ url_for('bookmark', id=item.id) }}" target="_blank">
-                            <h2 style="color: darkgray;"><i class="las la-bookmark"></i></h2>
-                         </a>
-                        
-                    </div>
-                </div>
-                <br/>
-
-            </div>
-        </div>
-        {% else %}
+        {% include 'task-list.html' %}
         
-        <div class="d-flex justify-content-center licon">
-            <h1>No Tasks found <i class="las la-frown"></i></h1>    
-        </div>
-        {% endfor %}
     </div>
 {% endblock %}
