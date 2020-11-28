@@ -25,10 +25,17 @@
               </h6>                               
               
                <hr class="dm-background"/>
-
-               <a class="float-right" href="{{ url_for('bookmark', id=item.id) }}" target="_blank">
-                  <h2 style="color: darkgray;"><i class="las la-bookmark"></i></h2>
-               </a>
+               
+              {% if item.bookmark %}
+                  <a class="float-right">
+                     <h2 style="color: darkgray;"><i class="las la-star"></i></h2>
+                  </a>
+              {% else %}
+                  {% set fav_url = url_for('bookmark', id=item.id) %}
+                  <a class="float-right" onclick="make_fav('{{ fav_url }}', {{ item.id }} )">
+                     <h2 style="color: darkgray;"><i class="las la-bookmark" id="icn-bm-{{item.id}}"></i></h2>
+                  </a>                 
+              {% endif %}               
 
               <a class="float-right" data-toggle="collapse" href="#collapseExample-{{ loop.index }}" role="button" aria-expanded="false" aria-controls="collapseExample">
                  <h2 style="color: darkgray;"><i class="las la-plus-square"></i></h2>
@@ -36,7 +43,7 @@
               
                <div class="collapse" id="collapseExample-{{ loop.index }}">
                   <div class="card dark-mode">
-                     <code class="loop-code">                 
+                     <code class="loop-code">
                         {% for key in item.data %}                        
                         <strong><i class="las la-feather-alt"></i> {{ key }}</strong>: {{ item.data.get(key) }}
                         <br/>                        
@@ -56,3 +63,27 @@
    </div>
   {% endfor %}
 </div>
+
+<script>
+   function make_fav(url, id){      
+      
+      $.ajax({
+					type        : 'GET',					
+					url         : url,					
+					encode      : true,
+
+					success: function(data, textStatus, jqXHR){                  
+                  $("#icn-bm-" + id).removeClass("las la-bookmark").addClass("las la-star")
+               },
+               
+					error: function(jqXHR, textStatus, errorThrown){						                  
+                  console.log("ERROR")
+               }	
+               			  
+				})
+					// using the done promise callback
+					.done(function(data) {						
+                  // done                  
+					});
+   }
+</script>
