@@ -11,19 +11,8 @@ class Rdt(object):
 
         base_url = obj.sync_type.base_url
         xpaths = obj.sync_type.extras.get("xp")
-        all_links = []
-
-        cats = {
-            "popular": "/r/popular/",
-            "popular-india": "r/popular/?geo_filter=IN",
-            "popular-everywhere": "/r/popular/?geo_filter=GLOBAL",
-            "popular-us": "r/popular/?geo_filter=US",
-            "popular-new": "r/popular/new/",
-            "popular-today": "r/popular/top",
-            "popular-week": "r/popular/top/?t=week",
-            "popular-month": "r/popular/top/?t=month",
-            "python": "r/Python/",
-        }
+        cats = obj.sync_type.extras.get("cats")
+        all_links = []        
 
         cat = kwargs.get("cat")        
 
@@ -35,12 +24,12 @@ class Rdt(object):
         doc = Internet.post_phjs(url, render_type="html", output_as_json="false")
         html = HTML(html=doc)
         
-        for xpath in xpaths:            
-            links = html.xpath(xpath)                        
+        for xpath in xpaths:                    
+            links = html.xpath(xpath)                                    
             if links:
                 all_links.extend(links)        
         
-        for a in all_links[::-1]:            
+        for a in all_links[::-1]:           
             path = a.attrs.get('href')
             url = urllib.parse.urljoin(base_url, path)
             name = a.text.strip()
