@@ -40,8 +40,10 @@
                         <strong><i class="las la-lock"></i> Is Locked:</strong> {{ sync_type.locked }}<br/>
                         <strong><i class="las la-paper-plane"></i> Dispatch To:</strong> {{ sync_type.dispatch_to }}<br/>
                         <strong><i class="las la-bell"></i> Dispatch Notification:</strong> {{ sync_type.dispatch_notification }}<br/>
-                        <strong><i class="las la-anchor"></i> Base URL:</strong> {{ sync_type.base_url }}<br/>
-                        <strong><i class="las la-list"></i> Extras:</strong> {{ sync_type.extras }}
+                        <strong><i class="las la-anchor"></i> Base URL:</strong> {{ sync_type.base_url }}<br/>                        
+                        {% for k, v in sync_type.extras.items() %}
+                           <strong><i class="las la-list"></i> {{ k }}:</strong> {{ v }}<br/>
+                        {% endfor %}
                      </code>
                   </div>
                </div>                            

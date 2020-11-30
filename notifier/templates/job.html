@@ -17,7 +17,9 @@
                             {% elif job.status == "FAILED" %}
                             <span class="badge badge-danger"><i class="las la-times-circle"></i> BAD</span>
                             {% elif job.status == "STARTED" %}                  
-                            <span class="badge badge-pill badge-dark"><i class="las la-running"></i> OooOooO</span>
+                            <span class="badge badge-pill badge-dark"><i class="las la-running"></i> RUNNING</span>
+                            {% else %}
+                            <span class="badge badge-warning"><i class="las la-running"></i> {{ job.status }}</span>
                             {% endif %}
                         </div>
                         
@@ -38,8 +40,8 @@
                         <p>
                             <code class="loop-code">                                                  
                                 <strong><i class="las la-arrow-alt-circle-right"></i> Client IP:</strong> {{ job.extras.client_ip }}<br/>
-                                <strong><i class="las la-link"></i> URL Path:</strong> {{ job.extras.url_path }}<br/>
-                                <strong><i class="las la-link"></i> URL Query:</strong> {{ job.extras.url_query }}<br/>
+                                <strong><i class="las la-link"></i> URL Path:</strong> {{ job.url or job.extras.url_path }}<br/>
+                                <strong><i class="las la-link"></i> URL Query:</strong> {{ job.qp or job.extras.url_query }}<br/>
                                 <strong>Error:</strong> {{ job.err }}
                     </code>
                         </p>                        

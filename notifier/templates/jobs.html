@@ -22,7 +22,9 @@
                  {% elif item.status == "FAILED" %}
                   <span class="badge badge-danger"><i class="las la-times-circle"></i> BAD</span>
                  {% elif item.status == "STARTED" %}                  
-                  <span class="badge badge-pill badge-dark"><i class="las la-running"></i> OooOooO</span>
+                  <span class="badge badge-pill badge-dark"><i class="las la-running"></i> RUNNING</span>
+                 {% else %}                  
+                  <span class="badge badge-warning"><i class="las la-running"></i> {{ item.status }}</span>
                  {% endif %}
               </div>
 
@@ -46,8 +48,8 @@
               <p>
                  <code class="loop-code">
                   <strong><i class="las la-arrow-alt-circle-right"></i> Client IP:</strong> {{ item.extras.client_ip }}<br/>
-                  <strong><i class="las la-link"></i> URL Path:</strong> {{ item.extras.url_path }}<br/>
-                  <strong><i class="las la-link"></i> URL Query:</strong> {{ item.extras.url_query }}<br/>
+                  <strong><i class="las la-link"></i> URL Path:</strong> {{ item.url or item.extras.url_path }}<br/>
+                  <strong><i class="las la-link"></i> URL Query:</strong> {{ item.qp or item.extras.url_query }}<br/>
                  Error: {{ item.err }}
                  </code>
               </p>

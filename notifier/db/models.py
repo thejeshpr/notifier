@@ -55,13 +55,15 @@ class Job(Base):
 
     created_at      = Column(DateTime(timezone=True), default=datetime.now)  
     err             = Column(Text, nullable=True)
-    extras          = Column(JSON, nullable=True)    
+    extras          = Column(JSON, nullable=True)
     id              = Column(Integer, unique=True, primary_key=True, autoincrement=True)
     status          = Column(String, default="STARTED")
     sync_type       = relationship("SyncType", back_populates="jobs")
     sync_type_id    = Column(Integer, ForeignKey('sync_type.id'))
     tasks           = relationship('Task', back_populates="job")
-    unique_key      = Column(String, unique=True, index=True)    
+    unique_key      = Column(String, unique=True, index=True)
+    url             = Column(String, nullable=True)
+    qp              = Column(String, nullable=True)
 
 
 class Task(Base):

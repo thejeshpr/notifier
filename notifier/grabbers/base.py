@@ -82,6 +82,8 @@ class Base(object):
                 unique_key=job_id,
                 sync_type=self.sync_type,
                 status=status,
+                url=request.url.path,
+                qp=Base.parse_qp(request.url.query),
                 extras=dict(
                     client_ip=request.client.host,
                     url_path=request.url.path,
