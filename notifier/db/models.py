@@ -84,6 +84,7 @@ class Task(Base):
     unique_key    = Column(Text, unique=True, index=True)
     url           = Column(Text, nullable=True)
     bookmark      = Column(Boolean, default=False, nullable=True)
+    args          = Column(String, nullable=True)
 
 
 class PriceTracker(Base):

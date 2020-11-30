@@ -52,6 +52,7 @@ class Base(object):
         self.tasks: List[schema.TaskIn] = []
         self.sync_type = self.get_sync_type(sync_type_name)
         self.job = self.create_job(job_id, request)
+        self.request = request
         
 
     def get_sync_type(self, sync_type_name: str) -> models.SyncType:
@@ -149,7 +150,8 @@ class Base(object):
                             name=task.name,
                             sync_type=self.sync_type,
                             task_type=task.task_type,
-                            url=task.url
+                            url=task.url,
+                            args=Base.parse_qp(self.request.url.query)
                         )
                     )
                     self.db.commit()
