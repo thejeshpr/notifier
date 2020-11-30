@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %} Tasks | Loopholes {% endblock %}
+
+{% block content %}
+
+{% set url_name = '' %}
+
+{% include 'task-list.html' %}
+
+    <nav aria-label="Page navigation">    
+        <ul class="pagination pagination-lg justify-content-center">
+        {% if page - 1 > 0 %}
+        <li class="page-item"><a class="page-link dark-mode" style="color: cornsilk;" href="{{ request.url_for('parse_filter', id=sync_type_id, arg=encoded_data) }}?page={{page - 1}}">Prev</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link dark-mode" style="color: cornsilk;" href="{{ request.url_for('parse_filter', id=sync_type_id, arg=encoded_data) }}">Prev</a></li>
+        {% endif %}              
+        <li class="page-item"><a class="page-link dark-mode" style="color: cornsilk;" href="{{ request.url_for('parse_filter', id=sync_type_id, arg=encoded_data) }}?page={{page + 1}}">Next</a></li>
+        </ul>
+    </nav>
+
+{% endblock %}

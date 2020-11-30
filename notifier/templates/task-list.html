@@ -18,7 +18,7 @@
                </h6>               
               <h6 class="card-subtitle mb-2 text-muted"><i class="las la-sync"></i> Type: <a href="{{ request.url_for('sync_type', id=item.sync_type.id) }}">{{ item.sync_type.name }}</a></h6>
               <h6 class="card-subtitle mb-2 text-muted">
-               <i class="las la-code"></i> Args: <code>{{ item.job.extras.url_query or "default" }}</code>
+               <i class="las la-code"></i> Args: <code>{{ item.args or "default" }}</code>
               </h6>
               <h6 class="card-subtitle mb-2 text-muted">
                  <i class="las la-calendar-alt"></i> Timestamp: <span class="badge badge-light">{{ item.data.get("timestamp") or item.created_at }}</span>

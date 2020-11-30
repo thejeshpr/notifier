@@ -12,6 +12,7 @@ from notifier.views import get_db
 from notifier.db import models
 
 from datetime import datetime, timedelta, date
+import base64 
 
 
 DATE_FORMAT = "%Y-%m-%d"
@@ -404,116 +405,79 @@ async def bookmarks(
 
 @app.get("/filter/tasks", response_class=HTMLResponse)
 def filter_render(
-    request: Request,
-    db: Session = Depends(get_db),
-    user: User = Depends(fastapi_users.get_current_user)
-    ):    
+        request: Request,
+        db: Session = Depends(get_db),
+        user: User = Depends(fastapi_users.get_current_user)
+    ):
 
-    filter_params = {
+    stats_sq = db.query(
+                    models.Task.args.label('args'),
+                    models.Task.sync_type_id.label('sync_type_id'),
+                    func.count(models.Task.sync_type_id).label('count')
+                )\
+                .group_by(models.Task.sync_type_id, models.Task.args)\
+                    .subquery()
+                    
+    res = db.query(models.SyncType, stats_sq.c.args, stats_sq.c.count)\
+                    .join(stats_sq, stats_sq.c.sync_type_id == models.SyncType.id)\
+                        .order_by(models.SyncType.name)\
+                            .all() 
 
-        # ng
-        "ng:{nfw:hot}": "ng:group=nsfw,type=hot",
-        "ng:{awesome:hot}": "ng:group=awesome,type=hot",        
-        "ng:{girl:hot}": "ng:group=girl,type=hot",
-        "ng:{girlcelebrity:hot}": "ng:group=girlcelebrity,type=hot",
-        "ng:{relationship:hot}": "ng:group=relationship,type=hot",
+    data = []
 
-        # news
-        "news": "news",
-        "news:{US}": "news:key=country,val=us",
-
-        # weather
-        "weather": "weather",
-        "weather:{Bangalore}": "weather:city=bangalore",
-
-        # D2
-        "d2": "d2",
-
-        # YS
-        "ys:{techsparks}": "ys:category=techsparks",
-        "ys:{Inspiration}": "ys:category=Inspiration",
-        "ys:{Opinion}": "ys:category=Opinion",
-        "ys:{Interview}": "ys:category=Interview",
-        "ys:{startup}": "ys:category=startup",
-        
-        # hn
-        "hn:{artificial-intelligence}": "hn:tag=artificial-intelligence",
-        "hn:{coding}": "hn:tag=coding",
-        "hn:{python}": "hn:tag=python",
-        "hn:{devops}": "hn:tag=devops",
-        "hn:{security}": "hn:tag=security",
-        "hn:{gaming}": "hn:tag=gaming",
-        "hn:{technology}": "hn:tag=technology",
-        "hn:{self-improvement}": "hn:tag=self-improvement",
-        "hn:{startups}": "hn:tag=startups",
-        "hn:{programming}": "hn:tag=programming",
-
-        # bfy
-        "bfy": "bfy",
-
-        # realpython
-        "realpython": "realpython",
-
-        # dzone
-        "dzone": "dzone",
-
-        # bkdko
-        "bkdko": "bkdko",
-
-        # crdko
-        "crdko": "crdko",
-
-        # crdko_road_test
-        "crdko_road_test": "crdko_road_test",
-
-        # bkdko_road_test
-        "bkdko_road_test": "bkdko_road_test",
-
-        # autocrind
-        "autocrind": "autocrind",
-
-        # crwle
-        "crwle": "crwle",
-    }
-
-    return templates.TemplateResponse(
-        "task-filter.html",
-        {
-            "filter_params": filter_params,
-            "request": request,
-            "current_page": "filters-task"
-        }
-    )
-
-
-def parse_params(param: str) -> dict:
-    if ":" in param:
-        params = param.split(":")
-        sync_type, qp = params[0], params[1]
-    else:
-        sync_type, qp = param, None
+    for sync_type, args, count in res:
+        arg = args or 'default'
+        arg_bytes = arg.encode('ascii')
+        encoded_data = base64.b64encode(arg_bytes)
+        data.append(
+            (sync_type, args, count, encoded_data.decode('ascii'))
+        )
     
-    return {
-        "sync_type": sync_type,
-        "qp": qp
+    context = {
+        "stats": data,
+        "request": request,
+        "current_page": "filters-task"
     }
 
+    return templates.TemplateResponse("task-filter.html", context=context)
 
-# def get_tasks_count(param: str):
-#     params = parse_params(param)
-#     sync_type = db.query(models.SyncType)\
-#                     .filter(models.SyncType.name == param["sync_type"])\                        
-#                         .first()
-#     tasks = db.query(models.Task)\
-#                 .join(models.SyncType, models.SyncType == sync_type)\
-#                     .join(models.Job, models.Job. == sync_type)
 
-# app.get("/filter/{params}", response_class=HTMLResponse)
-# def parse_filter(
-#     request: Request,
-#     db: Session = Depends(get_db),
-#     user: User = Depends(fastapi_users.get_current_user)
-# ):
-#     # pass
 
+@app.get("/filter/tasks/{id}/{arg}", response_class=HTMLResponse)
+def parse_filter(
+        request: Request,
+        id: int,
+        arg: str,
+        page: int = Query(0),
+        limit: int = Query(default=25, le=25),
+        db: Session = Depends(get_db),
+        user: User = Depends(fastapi_users.get_current_user)
+    ):
+
+    base64_bytes = arg.encode('ascii')
+    message_bytes = base64.b64decode(base64_bytes)
+    decoded_arg = message_bytes.decode('ascii')    
+
+    decoded_arg = '' if decoded_arg == 'default' else decoded_arg
+    
+    tasks = db.query(models.Task)\
+                .filter(
+                    and_(
+                        models.Task.args == decoded_arg,
+                        models.Task.sync_type_id == id
+                    )
+                )\
+                .order_by(models.Task.id.desc())\
+                    .offset( limit * page )\
+                        .limit(limit)\
+                            .all()
+    context = {
+        "items": tasks,
+        "request": request,
+        "encoded_data": arg,
+        "sync_type_id": id,
+        "page": page,
+        "current_page": "Tasks-filtered"        
+    }
+    return templates.TemplateResponse("tasks-by-arg.html", context)
 
