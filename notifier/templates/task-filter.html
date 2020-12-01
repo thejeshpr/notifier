@@ -21,18 +21,18 @@
                     <thead>
                       <tr class="ltitle" style="color: white;">                        
                         <th scope="col"><i class="las la-key"></i> ID</th>                          
-                        <th scope="col"><i class="las la-key"></i> Sync Type</th>                          
-                        <th scope="col"><i class="las la-key"></i> Args</th>                          
-                        <th scope="col"><i class="las la-tasks"></i> Tasks</th>                                                     
+                        <th scope="col"><i class="las la-key"></i> Sync Type</th>                                                  
+                        <th scope="col"><i class="las la-tasks"></i> Tasks</th>                            
+                        <th scope="col"><i class="las la-key"></i> Args</th>                                                   
                       </tr>
                     </thead>
                     <tbody>
                         {% for sync_type, args, count, encoded_data in stats %}
                         <tr>
                             <th scope="row"><a href="#" class="licon">#{{ loop.index }}</a></th>
-                            <th scope="row"><h5><a href="{{ request.url_for('sync_type_tasks', id=sync_type.id) }}" class="licon"> <span class="badge badge-secondary">{{ sync_type.name }}</span></a></th></h5>
-                            <th scope="row"><a href="{{ request.url_for('parse_filter', id=sync_type.id, arg=encoded_data) }}" class="licon"><code style="color:#e83e8c;">{{ args or "default" }}</code></a></th>
-                            <td>{{ count }}</td>                            
+                            <th scope="row"><h5><a href="{{ request.url_for('sync_type_tasks', id=sync_type.id) }}" class="licon"> <span class="badge badge-secondary">{{ sync_type.name }}</span></a></th></h5>                            
+                            <td><a href="{{ request.url_for('parse_filter', id=sync_type.id, arg=encoded_data) }}" class="licon">{{ count }}</a></td>
+                            <td scope="row"><a href="{{ request.url_for('parse_filter', id=sync_type.id, arg=encoded_data) }}" class="licon"><code style="color:#e83e8c;">{{ args or "default" }}</code></a></td>
                           </tr>
                         {% endfor %}                                                            
                     </tbody>
