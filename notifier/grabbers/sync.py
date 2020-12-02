@@ -37,7 +37,8 @@ from notifier.grabbers.frecdcmp import FreCdCmp
 from notifier.grabbers.thephoblographer import Thephoblographer
 from notifier.grabbers.rdt import Rdt
 from notifier.grabbers.better_prog import BetterProg
-
+from notifier.grabbers.mom import MOM
+from notifier.grabbers.the_asc import TheAsc
 
 SYNC_GRABBERS = {    
     "pricetracker": PriceTrackerSync.sync,
@@ -72,6 +73,8 @@ SYNC_GRABBERS = {
     "thephoblographer": Thephoblographer.sync,
     "rdt": Rdt.sync,
     "better_programming": BetterProg.sync,
+    "mom": MOM.sync,
+    "the_asc": TheAsc.sync,
 }
 
 

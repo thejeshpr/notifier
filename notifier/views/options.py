@@ -39,3 +39,5 @@ class SyncTypeSet(str, Enum):
     thephoblographer = "thephoblographer"
     rdt = "rdt"
     better_programming = "better_programming"
+    mom = "mom"
+    the_asc = "the_asc"

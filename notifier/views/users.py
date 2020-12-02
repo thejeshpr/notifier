@@ -54,7 +54,7 @@ else:
 
 cookie_authentication = CookieAuthentication(
     secret=SECRET,
-    lifetime_seconds=3600,
+    lifetime_seconds=36000,
     cookie_secure=cookie_secure,    
     cookie_httponly=False
 )
