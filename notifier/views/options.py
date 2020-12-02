@@ -38,3 +38,4 @@ class SyncTypeSet(str, Enum):
     fredcdmp = "frecdcmp"
     thephoblographer = "thephoblographer"
     rdt = "rdt"
+    better_programming = "better_programming"

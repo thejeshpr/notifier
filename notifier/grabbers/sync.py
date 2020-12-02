@@ -36,6 +36,7 @@ from notifier.grabbers.gsm import GSM
 from notifier.grabbers.frecdcmp import FreCdCmp
 from notifier.grabbers.thephoblographer import Thephoblographer
 from notifier.grabbers.rdt import Rdt
+from notifier.grabbers.better_prog import BetterProg
 
 
 SYNC_GRABBERS = {    
@@ -70,6 +71,7 @@ SYNC_GRABBERS = {
     "frecdcmp": FreCdCmp.sync,
     "thephoblographer": Thephoblographer.sync,
     "rdt": Rdt.sync,
+    "better_programming": BetterProg.sync,
 }
 
 
