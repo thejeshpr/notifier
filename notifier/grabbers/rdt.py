@@ -27,7 +27,7 @@ class Rdt(object):
         
         res = Internet.html_get(url)
     
-        for p in res.html.find(".top-matter"):
+        for p in res.html.find(".top-matter")[::-1]:
             a = p.find("a", first=True)
             if a:
                 link = a.attrs.get("href")
