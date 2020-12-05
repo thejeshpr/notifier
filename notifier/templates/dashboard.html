@@ -60,8 +60,8 @@
 
                         &nbsp;&nbsp;<button type="submit" class="btn btn-primary mb-2">Filter</button>
                       </form>
-                      <a class="btn btn-secondary" href="{{ request.url_for('dashboard') }}?day={{ selected_day - 1 }}&month={{ selected_month }}&year={{ selected_year }}">Prev</a>
-                      <a class="btn btn-secondary" href="{{ request.url_for('dashboard') }}?day={{ selected_day + 1 }}&month={{ selected_month }}&year={{ selected_year }}">Next</a>
+                      <a class="btn btn-secondary" href="{{ request.url_for('dashboard') }}?delta={{ delta - 1 }}&day={{ selected_day }}&month={{ selected_month }}&year={{ selected_year }}">Prev</a>
+                      <a class="btn btn-secondary" href="{{ request.url_for('dashboard') }}?delta={{ delta + 1 }}&day={{ selected_day }}&month={{ selected_month }}&year={{ selected_year }}">Next</a>
                  </div>
 
                  <hr class="dm-background"/>

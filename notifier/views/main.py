@@ -1,5 +1,6 @@
 import os
 
+
 from notifier import app, templates
 from fastapi import Request, Depends, Query
 from fastapi.responses import ORJSONResponse, HTMLResponse
@@ -14,6 +15,12 @@ from notifier.db import models
 from datetime import datetime, timedelta, date
 import base64 
 
+
+from notifier.views.view_helper import (
+    JobHelper,
+    SyncTypeHelper,
+    TaskHelper
+)
 
 DATE_FORMAT = "%Y-%m-%d"
 
@@ -30,101 +37,30 @@ async def ping():
 
 @app.get("/", response_class=HTMLResponse)
 async def index(
-    request: Request,
-    db: Session = Depends(get_db),
-    user: User = Depends(fastapi_users.get_current_user)
-    ):    
-    task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
-            .group_by(models.Task.sync_type_id).subquery()
-    job_sq = db.query(models.Job.sync_type_id, func.count(models.Job.sync_type_id).label('count'))\
-            .group_by(models.Job.sync_type_id).subquery()
-
-    res = db.query(models.SyncType, job_sq.c.count, task_sq.c.count)\
-                .join( 
-                        (job_sq, job_sq.c.sync_type_id == models.SyncType.id),
-                        (task_sq, task_sq.c.sync_type_id == models.SyncType.id)
-                    )\
-                    .order_by(models.SyncType.id.asc()).all() 
-    context = {
-        "items": res,
-        "request": request
-    }
-    return templates.TemplateResponse("sync_types.html", context)
+        request: Request,
+        db: Session = Depends(get_db),
+        user: User = Depends(fastapi_users.get_current_user)
+    ):
+    """
+    index page
+    """    
+    return templates.TemplateResponse(**SyncTypeHelper.get_all_sync_types_with_stats(db, request))
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(
-    request: Request,
-    day: int = Query(None, ge=1, le=31),
-    month: int = Query(None, ge=1, le=12),
-    year: int = Query(None, ge=2020, le=2037),
-    db: Session = Depends(get_db),    
-    user: User = Depends(fastapi_users.get_current_user)
+        request: Request,
+        day: int = Query(None, ge=1, le=31),
+        month: int = Query(None, ge=1, le=12),
+        year: int = Query(None, ge=2020, le=2037),
+        delta: int = Query(0),
+        db: Session = Depends(get_db),
+        user: User = Depends(fastapi_users.get_current_user)
     ):
-    if day and month and year:
-        from_date = datetime(year, month, day)
-    else:
-        from_date = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
-    
-
-    # from_date = from_date - timedelta(hours=7, minutes=26)
-    # from_date = get_current_time(from_date)
-    # print("------------------------------") 
-    # print(from_date, "-", to_date)
-    # print(get_current_time(from_date))
-
-    to_date = from_date + timedelta(days=1)   
-    
-    task_sq = db.query(models.Task.sync_type_id, func.count(models.Task.sync_type_id).label('count'))\
-            .filter(and_(
-                models.Task.created_at >= from_date,
-                models.Task.created_at <= to_date,
-            ))\
-            .group_by(models.Task.sync_type_id).subquery()
-
-    job_sq = db.query(models.Job.sync_type_id, func.count(models.Job.sync_type_id).label('count'))\
-            .filter(and_(
-                models.Job.created_at >= from_date,
-                models.Job.created_at <= to_date,
-            ))\
-            .group_by(models.Job.sync_type_id).subquery()
-
-    res = db.query(models.SyncType, task_sq.c.count, job_sq.c.count)\
-                .outerjoin(
-                    (job_sq, job_sq.c.sync_type_id == models.SyncType.id),
-                    (task_sq, task_sq.c.sync_type_id == models.SyncType.id)
-                    )\
-                    .order_by(task_sq.c.count.desc()).all() 
-
-    from_dt = f"{from_date.day}/{from_date.month}/{from_date.year}"
-    to_dt = f"{to_date.day}/{to_date.month}/{to_date.year}"
-
-    # sort items by count
-    sorted_items = sorted(res, key=lambda x:x[1] if x[1] else 0, reverse=True)
-    
-    count = 0
-
-    for r in res:
-        if r[1]:
-            count = count + int(r[1])
-
-    context = {
-        "items": sorted_items,
-        "from_dt": from_dt,
-        "to_dt": to_dt,
-        "days": range(1,32),
-        "months": range(1,13),
-        "years": range(2020,2022),
-        "selected_day": from_date.day,
-        "selected_month": from_date.month,
-        "selected_year": from_date.year,
-        "current_page": "Dashboard",
-        "from_date": from_date.strftime(DATE_FORMAT),
-        "to_date": to_date.strftime(DATE_FORMAT),
-        "task_count": count,
-        "request": request
-    }    
-    return templates.TemplateResponse("dashboard.html", context)
+    """
+    dashboard page
+    """    
+    return templates.TemplateResponse( **SyncTypeHelper.dashboard(db, request, day, month, year, delta))
 
     
 
