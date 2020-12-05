@@ -99,7 +99,7 @@ class SyncTypeHelper(object):
             items   = sorted_items,
             from_dt = f"{from_date.day}/{from_date.month}/{from_date.year}",
             to_dt   = f"{to_date.day}/{to_date.month}/{to_date.year}",
-            days    = range(monthrange(from_date.year, from_date.month)[1] + 1),
+            days    = range(1, monthrange(from_date.year, from_date.month)[1] + 1),
             months  = range(1, 13),
             years   = range(2020, 2022),
             request = request,
