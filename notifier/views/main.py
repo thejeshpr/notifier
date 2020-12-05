@@ -342,6 +342,7 @@ async def bookmarks(
 @app.get("/filter/tasks", response_class=HTMLResponse)
 def filter_render(
         request: Request,
+        sync_type: int = Query(0),
         db: Session = Depends(get_db),
         user: User = Depends(fastapi_users.get_current_user)
     ):
@@ -353,11 +354,17 @@ def filter_render(
                 )\
                 .group_by(models.Task.sync_type_id, models.Task.args)\
                     .subquery()
-                    
-    res = db.query(models.SyncType, stats_sq.c.args, stats_sq.c.count)\
-                    .join(stats_sq, stats_sq.c.sync_type_id == models.SyncType.id)\
-                        .order_by(models.SyncType.name)\
-                            .all() 
+    if not sync_type:                    
+        res = db.query(models.SyncType, stats_sq.c.args, stats_sq.c.count)\
+                        .join(stats_sq, stats_sq.c.sync_type_id == models.SyncType.id)\
+                            .order_by(models.SyncType.name)\
+                                .all() 
+    else:
+        res = db.query(models.SyncType, stats_sq.c.args, stats_sq.c.count)\
+                        .filter(models.SyncType.id == sync_type)\
+                        .join(stats_sq, stats_sq.c.sync_type_id == models.SyncType.id)\
+                            .order_by(models.SyncType.name)\
+                                .all() 
 
     data = []
 

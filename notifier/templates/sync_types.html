@@ -27,6 +27,10 @@
                  <i class="las la-tasks"></i> Tasks: {{ task_count }}
                  <secondary><a href="{{ request.url_for('sync_type_tasks', id=sync_type.id) }}">View all</a></secondary>
                </h6>
+               <h6 class="card-subtitle mb-2 text-muted">
+                  <i class="las la-tasks"></i> Args:
+                  <secondary><a href="{{ request.url_for('filter_render') }}?sync_type={{ sync_type.id }}">View all</a></secondary>
+                </h6>
               <hr class="dm-background"/>
 
               <a class="float-right" data-toggle="collapse" href="#collapseExample-{{ loop.index }}" role="button" aria-expanded="false" aria-controls="collapseExample">

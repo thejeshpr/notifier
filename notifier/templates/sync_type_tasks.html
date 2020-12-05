@@ -20,6 +20,10 @@
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-calendar"></i> Timestamp: {{ sync_type.created_at }}</h6>
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-business-time"></i>  Jobs: {{ job_count }}</h6>
                         <h6 class="card-subtitle mb-2 text-muted"><i class="las la-tasks"></i>  Tasks: {{ task_count }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <i class="las la-tasks"></i> Args:
+                            <secondary><a href="{{ request.url_for('filter_render') }}?sync_type={{ sync_type.id }}">View all</a></secondary>
+                          </h6>
                         <hr class="dm-background"/>
 
                         <a class="float-right" data-toggle="collapse" href="#collapseExample-sync-type" role="button" aria-expanded="false" aria-controls="collapseExample">
